@@ -18,7 +18,7 @@
 }
 *{box-sizing:border-box} html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif}
 body{min-height:100vh;-webkit-font-smoothing:antialiased}
-a{color:inherit} button,input{font:inherit}
+a{color:inherit;text-decoration:none} button,input{font:inherit}
 .topbar{height:70px;background:#1b1d21;border-bottom:1px solid #25282d;display:flex;align-items:center}
 .topbar-inner{width:min(var(--max),calc(100% - 40px));margin:auto;display:flex;align-items:center;justify-content:space-between;gap:20px}
 .brand{display:flex;align-items:center;gap:12px}.brand-mark{width:42px;height:30px;border:2px solid var(--accent);border-radius:5px;display:grid;place-items:center;font:700 12px 'JetBrains Mono';color:var(--accent)}
@@ -31,7 +31,7 @@ main{width:min(var(--max),calc(100% - 40px));margin:0 auto;padding:22px 0 55px}
 .search-hint{margin-top:8px;display:flex;gap:15px;flex-wrap:wrap;color:var(--muted2);font-size:10.5px}.search-hint b{color:var(--accent)}
 .combo-list{position:absolute;z-index:50;left:0;right:0;top:53px;background:#202328;border:1px solid #4b5058;border-radius:9px;box-shadow:0 18px 40px rgba(0,0,0,.45);max-height:330px;overflow:auto;display:none}.combo-list.open{display:block}
 .combo-item{padding:10px 13px;border-bottom:1px solid #30343a;display:flex;justify-content:space-between;gap:15px;cursor:pointer;font-size:12.5px}.combo-item:last-child{border-bottom:0}.combo-item:hover{background:#292d33}.combo-item .tag{color:var(--accent);font:600 10px 'JetBrains Mono';white-space:nowrap}.combo-empty{padding:14px;color:var(--muted);font-size:12px}
-.layout{display:grid;grid-template-columns:265px minmax(0,1fr) 310px;gap:18px;align-items:start}
+.layout{display:grid;grid-template-columns:280px minmax(0,1fr) 310px;gap:18px;align-items:start}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}.panel-head{padding:15px 16px 12px;border-bottom:1px solid var(--line2)}.panel-head h2{font-size:13px;margin:0;font-weight:800;text-transform:uppercase;letter-spacing:.04em}.panel-head p{font-size:10.5px;color:var(--muted);margin:4px 0 0}.panel-body{padding:14px 16px}
 .filter-step{padding:0 0 16px;margin-bottom:16px;border-bottom:1px solid var(--line2)}.filter-step:last-child{padding-bottom:0;margin-bottom:0;border-bottom:0}.step-label{display:flex;align-items:center;gap:7px;font-size:10.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}.step-no{width:20px;height:20px;border-radius:50%;border:1px solid #555a61;display:grid;place-items:center;font-size:9px;color:var(--muted)}.filter-step.done .step-no{background:var(--accent);border-color:var(--accent);color:#071316}
 .tipo-buttons{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}.tipo-btn{border:1px solid #464a51;background:#202328;color:#b9bdc4;border-radius:7px;padding:8px 5px;font-size:11px;font-weight:700;cursor:pointer}.tipo-btn:hover{border-color:var(--accent)}.tipo-btn.active{background:#083f47;border-color:var(--accent);color:#eaffff}
@@ -40,13 +40,13 @@ main{width:min(var(--max),calc(100% - 40px));margin:0 auto;padding:22px 0 55px}
 .empty{min-height:560px;display:grid;place-items:center;text-align:center;padding:50px;color:var(--muted)}.empty-mark{width:72px;height:45px;border:2px solid #555a61;border-radius:7px;display:grid;place-items:center;margin:0 auto 12px;color:var(--muted);font:700 12px 'JetBrains Mono'}.empty h2{margin:0 0 5px;color:#dfe2e6;font-size:18px}.empty p{max-width:360px;margin:0;font-size:12px;line-height:1.6}
 .detail{padding:18px}.vehicle-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}.vehicle-main{min-width:0}.code-badge{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--accent);border-radius:5px;padding:5px 8px;color:var(--accent);font:700 11px 'JetBrains Mono';margin-bottom:9px}.vehicle-title{font-size:19px;line-height:1.25;font-weight:800;margin:0}.vehicle-meta{font-size:11px;color:var(--muted);margin-top:4px}.current-price{text-align:right;flex:0 0 auto}.current-price .value{font-size:28px;font-weight:800;letter-spacing:-.03em}.current-price .year{font-size:10px;color:var(--muted)}
 .chips{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0}.chip{border:1px solid #40444b;background:#22252a;border-radius:999px;padding:4px 9px;color:#c6c9ce;font-size:10px;font-weight:600}.chip.accent{border-color:#126873;background:#09343a;color:#76e9f3}.chip.negative{border-color:#6b3434;background:#351f20;color:#ff9b9b}
-.chart-card{margin-top:6px;border:1px solid #353940;border-radius:10px;background:#141619;padding:14px 14px 12px}.chart-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px}.chart-heading h3{font-size:12px;margin:0}.chart-heading span{font-size:9.5px;color:var(--muted)}.chart-wrap{height:365px;position:relative}.chart-legend{display:flex;gap:13px;flex-wrap:wrap;margin-top:7px;font-size:9.5px;color:var(--muted)}.legend-item{display:flex;align-items:center;gap:5px}.legend-dot{width:9px;height:9px;border-radius:2px;background:#4c535b}.legend-dot.current{background:var(--accent)}
+.chart-card{margin-top:6px;border:1px solid #353940;border-radius:10px;background:#141619;padding:14px 14px 12px}.chart-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px}.chart-heading h3{font-size:12px;margin:0}.chart-heading span{font-size:9.5px;color:var(--muted)}.chart-wrap{height:365px;position:relative}.chart-legend{display:flex;gap:13px;flex-wrap:wrap;margin-top:9px;font-size:9.5px;color:var(--muted)}.legend-item{display:flex;align-items:center;gap:5px}.legend-dot{width:9px;height:9px;border-radius:2px;background:#3e444c}.legend-dot.current{background:var(--accent)}.legend-dot.dep-neg{background:var(--red)}.legend-dot.dep-pos{background:var(--green)}
 .dep-title{margin:16px 0 9px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:#d9dde2}.dep-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.dep-card{border:1px solid #353940;border-radius:8px;background:#1b1e22;padding:10px}.dep-label{font-size:9px;color:var(--muted);line-height:1.3}.dep-value{font:700 14px 'JetBrains Mono';margin-top:4px}.dep-value.negative{color:#ff8989}.dep-value.positive{color:var(--green)}.dep-note{font-size:9px;color:var(--muted2);margin-top:8px;line-height:1.45}
-.similar-panel{position:sticky;top:18px}.similar-body{padding:10px}.similar-sub{font-size:10px;color:var(--muted);padding:4px 5px 9px;line-height:1.45}.similar-card{display:block;text-decoration:none;border:1px solid #3c4047;border-radius:9px;background:#17191c;padding:11px 10px;margin-bottom:7px;transition:.15s}.similar-card:hover{border-color:var(--accent);background:#1c2225}.similar-card .model{font-size:11.5px;font-weight:700;line-height:1.35}.similar-card .version{font-size:9.5px;color:var(--muted);margin-top:2px;line-height:1.35}.similar-card .bottom{display:flex;justify-content:space-between;align-items:end;gap:8px;margin-top:8px}.similar-card .price{font:700 12px 'JetBrains Mono';color:#dfe3e7}.similar-card .diff{font-size:8.5px;color:var(--accent);text-align:right}.similar-card .action{font-size:8.5px;color:var(--muted2);margin-top:6px}.similar-empty{padding:18px 8px;color:var(--muted);font-size:11px;text-align:center}
+.similar-panel{position:sticky;top:18px}.similar-body{padding:10px}.similar-sub{font-size:10px;color:var(--muted);padding:4px 5px 9px;line-height:1.45}.similar-card{display:block;border:1px solid #3c4047;border-radius:9px;background:#17191c;padding:11px 10px;margin-bottom:7px;transition:.15s;cursor:pointer}.similar-card:hover{border-color:var(--accent);background:#1c2225}.similar-card .model{font-size:11.5px;font-weight:700;line-height:1.35}.similar-card .version{font-size:9.5px;color:var(--muted);margin-top:2px;line-height:1.35}.similar-card .bottom{display:flex;justify-content:space-between;align-items:end;gap:8px;margin-top:8px}.similar-card .price{font:700 12px 'JetBrains Mono';color:#dfe3e7}.similar-card .diff{font:700 9px 'JetBrains Mono';text-align:right;color:var(--muted)}.similar-card .diff.positive{color:var(--green)}.similar-card .diff.negative{color:var(--red)}.similar-card .action{font-size:8.5px;color:var(--accent);margin-top:6px}.similar-empty{padding:18px 8px;color:var(--muted);font-size:11px;text-align:center}
 .note{font-size:9.5px;color:var(--muted2);line-height:1.5;margin-top:13px}.footer{width:min(var(--max),calc(100% - 40px));margin:auto;padding:0 0 30px;color:#656a72;font-size:9.5px}.footer strong{color:#8d9299}
 #loading{min-height:420px;display:grid;place-items:center;color:var(--muted);font-size:12px}.spinner{width:32px;height:32px;border:3px solid #363a40;border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:auto auto 10px}@keyframes spin{to{transform:rotate(360deg)}}#errorBox{display:none;padding:14px;border:1px solid #733c3c;background:#2d1c1e;color:#ffb0b0;border-radius:9px;font-size:12px;margin-bottom:18px}
-@media(max-width:1120px){.layout{grid-template-columns:235px minmax(0,1fr)}.similar-panel{grid-column:1/-1;position:static}.similar-body{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.similar-sub{grid-column:1/-1}.similar-card{margin:0}}
-@media(max-width:760px){.topbar{height:auto;padding:12px 0}.data-status{display:none}main,.footer{width:min(100% - 22px, var(--max))}.layout{grid-template-columns:1fr}.similar-body{grid-template-columns:1fr 1fr}.vehicle-head{flex-direction:column}.current-price{text-align:left}.dep-grid{grid-template-columns:repeat(2,1fr)}.chart-wrap{height:310px}.steps{display:block}.versions-panel{margin-top:18px}.search-title{display:block}}
+@media(max-width:1120px){.layout{grid-template-columns:250px minmax(0,1fr)}.similar-panel{grid-column:1/-1;position:static}.similar-body{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.similar-sub{grid-column:1/-1}.similar-card{margin:0}}
+@media(max-width:760px){.topbar{height:auto;padding:12px 0}.data-status{display:none}main,.footer{width:min(100% - 22px, var(--max))}.layout{grid-template-columns:1fr}.similar-body{grid-template-columns:1fr 1fr}.vehicle-head{flex-direction:column}.current-price{text-align:left}.dep-grid{grid-template-columns:repeat(2,1fr)}.chart-wrap{height:310px}.versions-panel{margin-top:18px}.search-title{display:block}}
 @media(max-width:480px){.similar-body{grid-template-columns:1fr}.dep-grid{grid-template-columns:1fr 1fr}.chart-wrap{height:290px}.vehicle-title{font-size:16px}.current-price .value{font-size:24px}}
 </style>
 </head>
@@ -84,7 +84,16 @@ main{width:min(var(--max),calc(100% - 40px));margin:0 auto;padding:22px 0 55px}
         <div class="detail">
           <div class="vehicle-head"><div class="vehicle-main"><div class="code-badge">CÓDIGO FIPE <span id="detCode"></span></div><h2 class="vehicle-title" id="detModelo"></h2><div class="vehicle-meta" id="detMarca"></div></div><div class="current-price"><div class="value" id="detPrice"></div><div class="year" id="detPriceYear"></div></div></div>
           <div class="chips" id="detChips"></div>
-          <div class="chart-card"><div class="chart-heading"><h3>Evolução de preços por ano</h3><span id="chartPeriod"></span></div><div class="chart-wrap"><canvas id="historyChart"></canvas></div><div class="chart-legend"><span class="legend-item"><i class="legend-dot"></i> demais anos</span><span class="legend-item"><i class="legend-dot current"></i> ano atual</span></div></div>
+          <div class="chart-card">
+            <div class="chart-heading"><h3>Evolução de preços e depreciação por ano</h3><span id="chartPeriod"></span></div>
+            <div class="chart-wrap"><canvas id="historyChart"></canvas></div>
+            <div class="chart-legend">
+              <span class="legend-item"><i class="legend-dot current"></i> Preço (ano atual)</span>
+              <span class="legend-item"><i class="legend-dot"></i> Preço (demais anos)</span>
+              <span class="legend-item"><i class="legend-dot dep-neg"></i> Depreciação (-)</span>
+              <span class="legend-item"><i class="legend-dot dep-pos"></i> Valorização (+)</span>
+            </div>
+          </div>
           <div class="dep-title">Desvalorização acumulada média</div>
           <div class="dep-grid">
             <div class="dep-card"><div class="dep-label">Média do histórico</div><div class="dep-value" id="depAvg">—</div></div>
@@ -99,7 +108,7 @@ main{width:min(var(--max),calc(100% - 40px));margin:0 auto;padding:22px 0 55px}
     </section>
 
     <aside class="panel similar-panel" id="similarPanel" style="display:none">
-      <div class="panel-head"><h2>Veículos de preço semelhante</h2><p>Links diretos baseados no veículo em análise</p></div>
+      <div class="panel-head"><h2>Veículos de preço semelhante</h2><p>Acesso direto a opções na mesma faixa de valor</p></div>
       <div class="similar-body"><div class="similar-sub" id="similarSub"></div><div id="similarGrid"></div></div>
     </aside>
   </div>
@@ -107,61 +116,557 @@ main{width:min(var(--max),calc(100% - 40px));margin:0 auto;padding:22px 0 55px}
 </div>
 </main>
 <footer class="footer">FIPE Explorer · dados carregados diretamente de <strong>fipe.xlsx</strong> · selecione um veículo para gerar uma URL com seu código FIPE.</footer>
+
 <script>
 (function(){
 'use strict';
-var ROWS=[], BY_CODE=new Map(), TREE=new Map(), LATEST_BY_TYPE=new Map(), ALL_LATEST=[];
-var state={tipo:null,marca:null,modelo:null,cod:null}; var chartInstance=null;
+var ROWS=[], BY_CODE=new Map(), TREE=new Map(), ALL_LATEST=[];
+var state={tipo:null,marca:null,modelo:null,cod:null}; 
+var chartInstance=null;
 var currencyFmt=new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0});
+
 function normalize(s){return (s??'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim()}
 function escapeHtml(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function showError(msg){document.getElementById('loading').style.display='none';var b=document.getElementById('errorBox');b.style.display='block';b.textContent=msg}
-function loadWorkbook(){fetch('./fipe.xlsx').then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.arrayBuffer()}).then(function(buf){document.getElementById('loadingText').textContent='Organizando dados…';var wb=XLSX.read(buf,{type:'array'});var ws=wb.Sheets[wb.SheetNames[0]];processRows(XLSX.utils.sheet_to_json(ws,{header:1,raw:true,blankrows:false}))}).catch(function(e){showError('Não foi possível carregar fipe.xlsx. Confirme que o arquivo está na mesma pasta do index.html. Detalhe: '+e.message)})}
-function processRows(rows){
- for(var i=1;i<rows.length;i++){
-   var r=rows[i];if(!r||r.length<8)continue;
-   var tipo=r[0],marca=r[1],modelo=r[2],versao=r[3],valor=Number(r[4]),ano=Number(r[5]),comb=r[6],cod=r[7]!=null?String(r[7]).trim():null,desval=Number(r[8]);
-   if(!cod||!tipo||!marca||!modelo||!Number.isFinite(valor)||!Number.isFinite(ano))continue;
-   var row={tipo:tipo,marca:marca,modelo:modelo,versao:versao||'',valor:valor,ano:ano,comb:comb||'',cod:cod,desval:Number.isFinite(desval)?desval:null};ROWS.push(row);
-   var e=BY_CODE.get(cod);if(!e){e={tipo:tipo,marca:marca,modelo:modelo,versao:row.versao,history:[],latest:null};BY_CODE.set(cod,e)}
-   e.history.push({ano:ano,valor:valor,comb:comb||'',desval:row.desval});if(!e.latest||ano>e.latest.ano)e.latest={ano:ano,valor:valor,comb:comb||''};
-   if(!TREE.has(tipo))TREE.set(tipo,new Map());var ms=TREE.get(tipo);if(!ms.has(marca))ms.set(marca,new Map());var mods=ms.get(marca);if(!mods.has(modelo))mods.set(modelo,[]);var vs=mods.get(modelo);if(!vs.some(function(v){return v.cod===cod}))vs.push({versao:row.versao,cod:cod});
- }
- BY_CODE.forEach(function(e){e.history.sort(function(a,b){return a.ano-b.ano})});
- BY_CODE.forEach(function(e,cod){var item={cod:cod,tipo:e.tipo,marca:e.marca,modelo:e.modelo,versao:e.versao,valor:e.latest.valor,ano:e.latest.ano,comb:e.latest.comb};ALL_LATEST.push(item);if(!LATEST_BY_TYPE.has(e.tipo))LATEST_BY_TYPE.set(e.tipo,[]);LATEST_BY_TYPE.get(e.tipo).push(item)});
- LATEST_BY_TYPE.forEach(function(a){a.sort(function(x,y){return x.valor-y.valor})});
- finishLoading()
+
+function loadWorkbook(){
+  fetch('./fipe.xlsx')
+    .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.arrayBuffer()})
+    .then(function(buf){
+      document.getElementById('loadingText').textContent='Organizando dados…';
+      var wb=XLSX.read(buf,{type:'array'});
+      var ws=wb.Sheets[wb.SheetNames[0]];
+      processRows(XLSX.utils.sheet_to_json(ws,{header:1,raw:true,blankrows:false}));
+    })
+    .catch(function(e){
+      showError('Não foi possível carregar fipe.xlsx. Confirme que o arquivo está na mesma pasta do index.html. Detalhe: '+e.message);
+    });
 }
-function finishLoading(){document.getElementById('loading').style.display='none';document.getElementById('app').style.display='block';document.getElementById('topMeta').innerHTML='<strong>'+ALL_LATEST.length.toLocaleString('pt-BR')+'</strong> códigos · <strong>'+ROWS.length.toLocaleString('pt-BR')+'</strong> registros';buildTipoButtons();initQuickSearch();initCombo('marcaInput','marcaList',getMarcaOptions,onMarcaChosen);initCombo('modeloInput','modeloList',getModeloOptions,onModeloChosen);window.addEventListener('hashchange',handleHash);handleHash()}
-function buildTipoButtons(){var w=document.getElementById('tipoButtons');w.innerHTML='';Array.from(TREE.keys()).sort().forEach(function(tipo){var b=document.createElement('button');b.type='button';b.className='tipo-btn';b.textContent=tipo;b.addEventListener('click',function(){chooseTipo(tipo)});w.appendChild(b)})}
-function chooseTipo(tipo){state.tipo=tipo;state.marca=null;state.modelo=null;state.cod=null;document.querySelectorAll('#tipoButtons .tipo-btn').forEach(function(b){b.classList.toggle('active',b.textContent===tipo)});document.getElementById('stepTipo').classList.add('done');var s=document.getElementById('stepMarca');s.classList.add('done');s.classList.remove('disabled');var i=document.getElementById('marcaInput');i.disabled=false;i.placeholder='Digite a marca…';i.value='';document.getElementById('marcaChosen').textContent='';resetModeloStep();hideVersions()}
-function initCombo(inputId,listId,getOptions,onChoose){var input=document.getElementById(inputId),list=document.getElementById(listId),active=-1;
- function close(){list.classList.remove('open');active=-1}
- function render(q){var opts=getOptions(q);list.innerHTML='';if(!opts.length){var e=document.createElement('div');e.className='combo-empty';e.textContent='Nenhum resultado';list.appendChild(e)}else{opts.slice(0,60).forEach(function(o,idx){var el=document.createElement('div');el.className='combo-item';if(idx===active)el.style.background='#292d33';var l=document.createElement('span');l.textContent=o.label;el.appendChild(l);if(o.tag){var t=document.createElement('span');t.className='tag';t.textContent=o.tag;el.appendChild(t)}el.addEventListener('mousedown',function(ev){ev.preventDefault();onChoose(o);input.value=o.label;close()});list.appendChild(el)})}list.classList.add('open')}
- input.addEventListener('focus',function(){if(!input.disabled)render(input.value)});input.addEventListener('input',function(){active=-1;render(input.value)});input.addEventListener('blur',function(){setTimeout(close,120)});input.addEventListener('keydown',function(e){var items=list.querySelectorAll('.combo-item');if(e.key==='ArrowDown'){e.preventDefault();active=Math.min(active+1,items.length-1);render(input.value)}else if(e.key==='ArrowUp'){e.preventDefault();active=Math.max(active-1,0);render(input.value)}else if(e.key==='Enter'){e.preventDefault();if(active>=0&&items[active])items[active].dispatchEvent(new Event('mousedown'))}else if(e.key==='Escape')close()})}
-function getMarcaOptions(q){if(!state.tipo)return[];var a=Array.from(TREE.get(state.tipo).keys()),n=normalize(q);a=n?a.filter(function(x){return normalize(x).includes(n)}):a;a.sort();return a.map(function(x){var c=TREE.get(state.tipo).get(x).size;return{label:x,tag:c+' modelo'+(c===1?'':'s'),value:x}})}
-function onMarcaChosen(o){state.marca=o.value;state.modelo=null;document.getElementById('stepMarca').classList.add('done');document.getElementById('marcaChosen').textContent='Selecionado: '+o.value;var s=document.getElementById('stepModelo');s.classList.remove('disabled');var i=document.getElementById('modeloInput');i.disabled=false;i.placeholder='Digite o modelo…';i.value='';document.getElementById('modeloChosen').textContent='';hideVersions()}
-function getModeloOptions(q){if(!state.tipo||!state.marca)return[];var a=Array.from(TREE.get(state.tipo).get(state.marca).keys()),n=normalize(q);a=n?a.filter(function(x){return normalize(x).includes(n)}):a;a.sort();return a.map(function(x){var c=TREE.get(state.tipo).get(state.marca).get(x).length;return{label:x,tag:c+' versão'+(c===1?'':'ões'),value:x}})}
-function onModeloChosen(o){state.modelo=o.value;document.getElementById('stepModelo').classList.add('done');document.getElementById('modeloChosen').textContent='Selecionado: '+o.value;showVersions()}
-function resetModeloStep(){var s=document.getElementById('stepModelo');s.classList.remove('done');var i=document.getElementById('modeloInput');i.disabled=true;i.value='';i.placeholder='Selecione a marca primeiro';document.getElementById('modeloChosen').textContent=''}
-function showVersions(){if(!state.tipo||!state.marca||!state.modelo)return;var vs=TREE.get(state.tipo).get(state.marca).get(state.modelo).slice().sort(function(a,b){return(a.versao||'').localeCompare(b.versao||'','pt-BR')});document.getElementById('versionsPanel').style.display='block';document.getElementById('versionsSub').textContent=vs.length+' versão'+(vs.length===1?'':'ões')+' encontradas';var tb=document.getElementById('versionsBody');tb.innerHTML='';vs.forEach(function(v){var e=BY_CODE.get(v.cod),tr=document.createElement('tr');if(state.cod===v.cod)tr.classList.add('selected');tr.innerHTML='<td>'+escapeHtml(v.versao||'—')+'<span class="cod-mini">'+escapeHtml(v.cod)+'</span></td><td>'+e.latest.ano+'</td><td class="version-price">'+currencyFmt.format(e.latest.valor)+'</td>';tr.addEventListener('click',function(){goToCode(v.cod)});tb.appendChild(tr)})}
+
+function processRows(rows){
+  for(var i=1;i<rows.length;i++){
+    var r=rows[i];if(!r||r.length<8)continue;
+    var tipo=r[0],marca=r[1],modelo=r[2],versao=r[3],valor=Number(r[4]),ano=Number(r[5]),comb=r[6],cod=r[7]!=null?String(r[7]).trim():null,desval=Number(r[8]);
+    if(!cod||!tipo||!marca||!modelo||!Number.isFinite(valor)||!Number.isFinite(ano))continue;
+    
+    var row={
+      tipo:String(tipo).trim(),
+      marca:String(marca).trim(),
+      modelo:String(modelo).trim(),
+      versao:versao?String(versao).trim():'',
+      valor:valor,
+      ano:ano,
+      comb:comb?String(comb).trim():'',
+      cod:cod,
+      desval:Number.isFinite(desval)?desval:null
+    };
+    ROWS.push(row);
+
+    var e=BY_CODE.get(cod);
+    if(!e){
+      e={tipo:row.tipo,marca:row.marca,modelo:row.modelo,versao:row.versao,history:[],latest:null};
+      BY_CODE.set(cod,e);
+    }
+    e.history.push({ano:ano,valor:valor,comb:row.comb,desval:row.desval});
+    if(!e.latest||ano>e.latest.ano)e.latest={ano:ano,valor:valor,comb:row.comb};
+
+    if(!TREE.has(row.tipo))TREE.set(row.tipo,new Map());
+    var ms=TREE.get(row.tipo);
+    if(!ms.has(row.marca))ms.set(row.marca,new Map());
+    var mods=ms.get(row.marca);
+    if(!mods.has(row.modelo))mods.set(row.modelo,[]);
+    var vs=mods.get(row.modelo);
+    if(!vs.some(function(v){return v.cod===cod}))vs.push({versao:row.versao,cod:cod});
+  }
+
+  BY_CODE.forEach(function(e){
+    e.history.sort(function(a,b){return a.ano-b.ano});
+  });
+
+  BY_CODE.forEach(function(e,cod){
+    var item={
+      cod:cod,
+      tipo:e.tipo,
+      marca:e.marca,
+      modelo:e.modelo,
+      versao:e.versao,
+      valor:e.latest.valor,
+      ano:e.latest.ano,
+      comb:e.latest.comb
+    };
+    ALL_LATEST.push(item);
+  });
+
+  finishLoading();
+}
+
+function finishLoading(){
+  document.getElementById('loading').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('topMeta').innerHTML='<strong>'+ALL_LATEST.length.toLocaleString('pt-BR')+'</strong> códigos · <strong>'+ROWS.length.toLocaleString('pt-BR')+'</strong> registros';
+  buildTipoButtons();
+  initQuickSearch();
+  initCombo('marcaInput','marcaList',getMarcaOptions,onMarcaChosen);
+  initCombo('modeloInput','modeloList',getModeloOptions,onModeloChosen);
+  window.addEventListener('hashchange',handleHash);
+  handleHash();
+}
+
+function buildTipoButtons(){
+  var w=document.getElementById('tipoButtons');
+  w.innerHTML='';
+  Array.from(TREE.keys()).sort().forEach(function(tipo){
+    var b=document.createElement('button');
+    b.type='button';
+    b.className='tipo-btn';
+    b.textContent=tipo;
+    b.addEventListener('click',function(){chooseTipo(tipo)});
+    w.appendChild(b);
+  });
+}
+
+function chooseTipo(tipo){
+  state.tipo=tipo;
+  state.marca=null;
+  state.modelo=null;
+  state.cod=null;
+  document.querySelectorAll('#tipoButtons .tipo-btn').forEach(function(b){b.classList.toggle('active',b.textContent===tipo)});
+  document.getElementById('stepTipo').classList.add('done');
+  var s=document.getElementById('stepMarca');
+  s.classList.add('done');
+  s.classList.remove('disabled');
+  var i=document.getElementById('marcaInput');
+  i.disabled=false;
+  i.placeholder='Digite a marca…';
+  i.value='';
+  document.getElementById('marcaChosen').textContent='';
+  resetModeloStep();
+  hideVersions();
+}
+
+function initCombo(inputId,listId,getOptions,onChoose){
+  var input=document.getElementById(inputId),list=document.getElementById(listId),active=-1;
+  function close(){list.classList.remove('open');active=-1}
+  function render(q){
+    var opts=getOptions(q);
+    list.innerHTML='';
+    if(!opts.length){
+      var e=document.createElement('div');
+      e.className='combo-empty';
+      e.textContent='Nenhum resultado';
+      list.appendChild(e);
+    }else{
+      opts.slice(0,60).forEach(function(o,idx){
+        var el=document.createElement('div');
+        el.className='combo-item';
+        if(idx===active)el.style.background='#292d33';
+        var l=document.createElement('span');
+        l.textContent=o.label;
+        el.appendChild(l);
+        if(o.tag){
+          var t=document.createElement('span');
+          t.className='tag';
+          t.textContent=o.tag;
+          el.appendChild(t);
+        }
+        el.addEventListener('mousedown',function(ev){
+          ev.preventDefault();
+          onChoose(o);
+          input.value=o.label;
+          close();
+        });
+        list.appendChild(el);
+      });
+    }
+    list.classList.add('open');
+  }
+  input.addEventListener('focus',function(){if(!input.disabled)render(input.value)});
+  input.addEventListener('input',function(){active=-1;render(input.value)});
+  input.addEventListener('blur',function(){setTimeout(close,120)});
+  input.addEventListener('keydown',function(e){
+    var items=list.querySelectorAll('.combo-item');
+    if(e.key==='ArrowDown'){e.preventDefault();active=Math.min(active+1,items.length-1);render(input.value)}
+    else if(e.key==='ArrowUp'){e.preventDefault();active=Math.max(active-1,0);render(input.value)}
+    else if(e.key==='Enter'){e.preventDefault();if(active>=0&&items[active])items[active].dispatchEvent(new Event('mousedown'))}
+    else if(e.key==='Escape')close();
+  });
+}
+
+function getMarcaOptions(q){
+  if(!state.tipo)return[];
+  var a=Array.from(TREE.get(state.tipo).keys()),n=normalize(q);
+  a=n?a.filter(function(x){return normalize(x).includes(n)}):a;
+  a.sort();
+  return a.map(function(x){
+    var c=TREE.get(state.tipo).get(x).size;
+    return{label:x,tag:c+' modelo'+(c===1?'':'s'),value:x};
+  });
+}
+
+function onMarcaChosen(o){
+  state.marca=o.value;
+  state.modelo=null;
+  document.getElementById('stepMarca').classList.add('done');
+  document.getElementById('marcaChosen').textContent='Selecionado: '+o.value;
+  var s=document.getElementById('stepModelo');
+  s.classList.remove('disabled');
+  var i=document.getElementById('modeloInput');
+  i.disabled=false;
+  i.placeholder='Digite o modelo…';
+  i.value='';
+  document.getElementById('modeloChosen').textContent='';
+  hideVersions();
+}
+
+function getModeloOptions(q){
+  if(!state.tipo||!state.marca)return[];
+  var a=Array.from(TREE.get(state.tipo).get(state.marca).keys()),n=normalize(q);
+  a=n?a.filter(function(x){return normalize(x).includes(n)}):a;
+  a.sort();
+  return a.map(function(x){
+    var c=TREE.get(state.tipo).get(state.marca).get(x).length;
+    return{label:x,tag:c+' versão'+(c===1?'':'ões'),value:x};
+  });
+}
+
+function onModeloChosen(o){
+  state.modelo=o.value;
+  document.getElementById('stepModelo').classList.add('done');
+  document.getElementById('modeloChosen').textContent='Selecionado: '+o.value;
+  var vs=TREE.get(state.tipo).get(state.marca).get(state.modelo);
+  if(vs&&vs.length>0){
+    goToCode(vs[0].cod);
+  }
+}
+
+function resetModeloStep(){
+  var s=document.getElementById('stepModelo');
+  s.classList.remove('done');
+  var i=document.getElementById('modeloInput');
+  i.disabled=true;
+  i.value='';
+  i.placeholder='Selecione a marca primeiro';
+  document.getElementById('modeloChosen').textContent='';
+}
+
+function showVersions(){
+  if(!state.tipo||!state.marca||!state.modelo)return;
+  var vs=TREE.get(state.tipo).get(state.marca).get(state.modelo).slice().sort(function(a,b){
+    return(a.versao||'').localeCompare(b.versao||'','pt-BR');
+  });
+  document.getElementById('versionsPanel').style.display='block';
+  document.getElementById('versionsSub').textContent=vs.length+' versão'+(vs.length===1?'':'ões')+' encontradas';
+  var tb=document.getElementById('versionsBody');
+  tb.innerHTML='';
+  vs.forEach(function(v){
+    var e=BY_CODE.get(v.cod),tr=document.createElement('tr');
+    if(state.cod===v.cod)tr.classList.add('selected');
+    tr.innerHTML='<td>'+escapeHtml(v.versao||'—')+'<span class="cod-mini">'+escapeHtml(v.cod)+'</span></td><td>'+e.latest.ano+'</td><td class="version-price">'+currencyFmt.format(e.latest.valor)+'</td>';
+    tr.addEventListener('click',function(){goToCode(v.cod)});
+    tb.appendChild(tr);
+  });
+}
+
 function hideVersions(){document.getElementById('versionsPanel').style.display='none'}
-function initQuickSearch(){var input=document.getElementById('quickSearch'),list=document.getElementById('quickSearchList');function render(q0){var q=normalize(q0);list.innerHTML='';if(q.length<2){list.classList.remove('open');return}var m=ALL_LATEST.filter(function(x){return normalize(x.marca).includes(q)||normalize(x.modelo).includes(q)||normalize(x.versao).includes(q)||normalize(x.cod).includes(q)}).slice(0,45);if(!m.length){var e=document.createElement('div');e.className='combo-empty';e.textContent='Nenhum veículo encontrado';list.appendChild(e)}else m.forEach(function(x){var el=document.createElement('div');el.className='combo-item';el.innerHTML='<span>'+escapeHtml(x.marca+' '+x.modelo+' — '+(x.versao||''))+'</span><span class="tag">'+escapeHtml(x.cod)+'</span>';el.addEventListener('mousedown',function(ev){ev.preventDefault();input.value='';list.classList.remove('open');goToCode(x.cod)});list.appendChild(el)});list.classList.add('open')}input.addEventListener('input',function(){render(input.value)});input.addEventListener('focus',function(){render(input.value)});input.addEventListener('blur',function(){setTimeout(function(){list.classList.remove('open')},120)})}
-function goToCode(cod){if(location.hash==='#codigo='+cod)renderDetail(cod);else location.hash='#codigo='+encodeURIComponent(cod)}
-function handleHash(){var m=/#codigo=([^&]+)/.exec(location.hash);if(m){var cod=decodeURIComponent(m[1]);if(BY_CODE.has(cod))renderDetail(cod)}}
-function syncFiltersTo(e){if(state.tipo!==e.tipo)chooseTipo(e.tipo);if(state.marca!==e.marca){onMarcaChosen({label:e.marca,value:e.marca});document.getElementById('marcaInput').value=e.marca}if(state.modelo!==e.modelo){onModeloChosen({label:e.modelo,value:e.modelo});document.getElementById('modeloInput').value=e.modelo}showVersions()}
+
+function initQuickSearch(){
+  var input=document.getElementById('quickSearch'),list=document.getElementById('quickSearchList');
+  function render(q0){
+    var q=normalize(q0);
+    list.innerHTML='';
+    if(q.length<2){list.classList.remove('open');return}
+    var m=ALL_LATEST.filter(function(x){
+      return normalize(x.marca).includes(q)||normalize(x.modelo).includes(q)||normalize(x.versao).includes(q)||normalize(x.cod).includes(q);
+    }).slice(0,45);
+    if(!m.length){
+      var e=document.createElement('div');
+      e.className='combo-empty';
+      e.textContent='Nenhum veículo encontrado';
+      list.appendChild(e);
+    }else{
+      m.forEach(function(x){
+        var el=document.createElement('div');
+        el.className='combo-item';
+        el.innerHTML='<span>'+escapeHtml(x.marca+' '+x.modelo+' — '+(x.versao||''))+'</span><span class="tag">'+escapeHtml(x.cod)+'</span>';
+        el.addEventListener('mousedown',function(ev){
+          ev.preventDefault();
+          input.value='';
+          list.classList.remove('open');
+          goToCode(x.cod);
+        });
+        list.appendChild(el);
+      });
+    }
+    list.classList.add('open');
+  }
+  input.addEventListener('input',function(){render(input.value)});
+  input.addEventListener('focus',function(){render(input.value)});
+  input.addEventListener('blur',function(){setTimeout(function(){list.classList.remove('open')},120)});
+}
+
+function goToCode(cod){
+  if(location.hash==='#codigo='+cod)renderDetail(cod);
+  else location.hash='#codigo='+encodeURIComponent(cod);
+}
+
+function handleHash(){
+  var m=/#codigo=([^&]+)/.exec(location.hash);
+  if(m){
+    var cod=decodeURIComponent(m[1]);
+    if(BY_CODE.has(cod))renderDetail(cod);
+  }
+}
+
+function syncFiltersTo(e){
+  state.tipo=e.tipo;
+  document.querySelectorAll('#tipoButtons .tipo-btn').forEach(function(b){b.classList.toggle('active',b.textContent===e.tipo)});
+  document.getElementById('stepTipo').classList.add('done');
+
+  state.marca=e.marca;
+  document.getElementById('stepMarca').classList.add('done');
+  var mi=document.getElementById('marcaInput');
+  mi.disabled=false;
+  mi.value=e.marca;
+  document.getElementById('marcaChosen').textContent='Selecionado: '+e.marca;
+
+  state.modelo=e.modelo;
+  document.getElementById('stepModelo').classList.add('done');
+  var modI=document.getElementById('modeloInput');
+  modI.disabled=false;
+  modI.value=e.modelo;
+  document.getElementById('modeloChosen').textContent='Selecionado: '+e.modelo;
+
+  showVersions();
+}
+
 function addChip(c,text,cls){var s=document.createElement('span');s.className='chip'+(cls?' '+cls:'');s.textContent=text;c.appendChild(s)}
 function pctText(v){if(v==null||!Number.isFinite(v))return'—';return(v>0?'+':'')+v.toFixed(2)+'%'}
 function cumulative(history,n){if(history.length<2)return null;var h=history.slice(Math.max(0,history.length-n));if(h.length<2||!h[0].valor)return null;return ((h[h.length-1].valor-h[0].valor)/h[0].valor)*100}
 function avgDep(history,n){var h=history.slice(Math.max(0,history.length-n));var vals=h.map(function(x){return x.desval}).filter(function(v){return Number.isFinite(v)&&v>0});return vals.length?vals.reduce(function(a,b){return a+b},0)/vals.length*100:null}
-function renderDetail(cod){var e=BY_CODE.get(cod);if(!e)return;state.cod=cod;syncFiltersTo(e);document.getElementById('emptyPanel').style.display='none';document.getElementById('detailPanel').style.display='block';document.getElementById('similarPanel').style.display='block';document.getElementById('detCode').textContent=cod;document.getElementById('detModelo').textContent=e.modelo+(e.versao?' — '+e.versao:'');document.getElementById('detMarca').textContent=e.tipo+' · '+e.marca;document.getElementById('detPrice').textContent=currencyFmt.format(e.latest.valor);document.getElementById('detPriceYear').textContent='ano modelo '+e.latest.ano;
- var chips=document.getElementById('detChips');chips.innerHTML='';addChip(chips,e.latest.comb||'Combustível não informado','accent');addChip(chips,e.history.length+' registros históricos','');var total=cumulative(e.history,e.history.length);if(total!=null)addChip(chips,pctText(total)+' desde '+e.history[0].ano,total<0?'negative':'');
- var avg=avgDep(e.history,e.history.length),d3=cumulative(e.history,3),d6=cumulative(e.history,6),d12=cumulative(e.history,12);setDep('depAvg',avg);setDep('dep3',d3);setDep('dep6',d6);setDep('dep12',d12);document.getElementById('depNote').textContent='O arquivo fipe.xlsx contém VAL_ANO (ano-modelo) e DESVAL, mas não contém datas mensais. Por isso, os indicadores de 3/6/12 usam os últimos períodos anuais disponíveis, sem inventar uma série mensal.';
- renderChart(e);renderSimilar(cod,e)}
-function setDep(id,v){var el=document.getElementById(id);el.textContent=pctText(v);el.classList.toggle('negative',v!=null&&v<0);el.classList.toggle('positive',v!=null&&v>0)}
-var labelPlugin={id:'barValueLabels',afterDatasetsDraw:function(chart){var ctx=chart.ctx;ctx.save();chart.data.datasets.forEach(function(ds,di){if(ds.type==='line')return;var meta=chart.getDatasetMeta(di);meta.data.forEach(function(bar,i){var val=ds.data[i];if(val==null||!Number.isFinite(val))return;ctx.fillStyle='#e9edf1';ctx.font='600 9px Inter';ctx.textAlign='center';ctx.textBaseline='bottom';var label=di===0?currencyFmt.format(val):val.toFixed(1)+'%';ctx.fillText(label,bar.x,bar.y-4)})});ctx.restore()}};
-function renderChart(e){var h=e.history.slice().sort(function(a,b){return a.ano-b.ano}),labels=h.map(function(x){return String(x.ano)}),prices=h.map(function(x){return x.valor}),currentYear=new Date().getFullYear(),idx=h.reduce(function(best,x,i){return x.ano===currentYear?i:best},-1);if(idx<0)idx=h.length-1;var priceColors=h.map(function(x,i){return i===idx?'#08c6d8':'#4c535b'});if(chartInstance)chartInstance.destroy();chartInstance=new Chart(document.getElementById('historyChart').getContext('2d'),{type:'bar',plugins:[labelPlugin],data:{labels:labels,datasets:[{label:'Preço FIPE',data:prices,backgroundColor:priceColors,borderColor:priceColors,borderWidth:1,borderRadius:4,maxBarThickness:48}]},options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:24,right:8,left:2,bottom:0}},plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return currencyFmt.format(c.parsed.y)}}}},scales:{y:{beginAtZero:false,ticks:{color:'#a1a6ae',font:{size:9},callback:function(v){return currencyFmt.format(v)}},grid:{color:'#292c31'}},x:{ticks:{color:'#a1a6ae',font:{size:9}},grid:{display:false}}}}});document.getElementById('chartPeriod').textContent=h.length?h[0].ano+' — '+h[h.length-1].ano:'';document.getElementById('chartNote').textContent='A coluna em destaque representa o ano atual ('+currentYear+'). Os valores são os registros de VAL_ANO da planilha; DESVAL é usado nos indicadores abaixo.'}
-function renderSimilar(cod,e){var pool=LATEST_BY_TYPE.get(e.tipo)||[],target=e.latest.valor;var list=pool.filter(function(x){return x.cod!==cod&&x.valor>0}).map(function(x){return{item:x,diff:Math.abs(x.valor-target),pct:target?Math.abs((x.valor-target)/target*100):Infinity}}).filter(function(x){return x.pct<=20}).sort(function(a,b){return a.diff-b.diff}).slice(0,10);if(list.length<5)list=pool.filter(function(x){return x.cod!==cod&&x.valor>0}).map(function(x){return{item:x,diff:Math.abs(x.valor-target),pct:target?Math.abs((x.valor-target)/target*100):Infinity}}).sort(function(a,b){return a.diff-b.diff}).slice(0,10);var grid=document.getElementById('similarGrid');grid.innerHTML='';document.getElementById('similarSub').textContent='Mesma categoria, priorizando valores até ±20% de '+currencyFmt.format(target)+'.';if(!list.length){grid.innerHTML='<div class="similar-empty">Nenhum veículo comparável encontrado.</div>';return}list.forEach(function(w){var x=w.item,a=document.createElement('a');a.className='similar-card';a.href='#codigo='+encodeURIComponent(x.cod);var diff=target?((x.valor-target)/target*100):0;a.innerHTML='<div class="model">'+escapeHtml(x.marca+' '+x.modelo)+'</div><div class="version">'+escapeHtml(x.versao||'')+'</div><div class="bottom"><span class="price">'+currencyFmt.format(x.valor)+'</span><span class="diff">'+pctText(diff)+'</span></div><div class="action">Consultar histórico →</div>';a.addEventListener('click',function(ev){ev.preventDefault();goToCode(x.cod)});grid.appendChild(a)})}
+
+function renderDetail(cod){
+  var e=BY_CODE.get(cod);if(!e)return;
+  state.cod=cod;
+  syncFiltersTo(e);
+  document.getElementById('emptyPanel').style.display='none';
+  document.getElementById('detailPanel').style.display='block';
+  document.getElementById('similarPanel').style.display='block';
+  document.getElementById('detCode').textContent=cod;
+  document.getElementById('detModelo').textContent=e.modelo+(e.versao?' — '+e.versao:'');
+  document.getElementById('detMarca').textContent=e.tipo+' · '+e.marca;
+  document.getElementById('detPrice').textContent=currencyFmt.format(e.latest.valor);
+  document.getElementById('detPriceYear').textContent='ano modelo '+e.latest.ano;
+
+  var chips=document.getElementById('detChips');chips.innerHTML='';
+  addChip(chips,e.latest.comb||'Combustível não informado','accent');
+  addChip(chips,e.history.length+' registros históricos','');
+  var total=cumulative(e.history,e.history.length);
+  if(total!=null)addChip(chips,pctText(total)+' desde '+e.history[0].ano,total<0?'negative':'');
+
+  var avg=avgDep(e.history,e.history.length),d3=cumulative(e.history,3),d6=cumulative(e.history,6),d12=cumulative(e.history,12);
+  setDep('depAvg',avg);setDep('dep3',d3);setDep('dep6',d6);setDep('dep12',d12);
+  document.getElementById('depNote').textContent='O arquivo fipe.xlsx contém VAL_ANO (ano-modelo) e DESVAL, mas não contém datas mensais. Por isso, os indicadores de 3/6/12 usam os últimos períodos anuais disponíveis, sem inventar uma série mensal.';
+
+  renderChart(e);
+  renderSimilar(cod,e);
+}
+
+function setDep(id,v){
+  var el=document.getElementById(id);
+  el.textContent=pctText(v);
+  el.classList.toggle('negative',v!=null&&v<0);
+  el.classList.toggle('positive',v!=null&&v>0);
+}
+
+var labelPlugin={
+  id:'barValueLabels',
+  afterDatasetsDraw:function(chart){
+    var ctx=chart.ctx;ctx.save();
+    chart.data.datasets.forEach(function(ds,di){
+      var meta=chart.getDatasetMeta(di);
+      meta.data.forEach(function(bar,i){
+        var val=ds.data[i];
+        if(val==null||!Number.isFinite(val))return;
+        ctx.font='600 8.5px Inter';
+        ctx.textAlign='center';
+        if(di===0){
+          ctx.fillStyle='#e9edf1';
+          ctx.textBaseline='bottom';
+          ctx.fillText(currencyFmt.format(val),bar.x,bar.y-4);
+        }else{
+          ctx.fillStyle=val<0?'#ff8989':(val>0?'#38c98b':'#a1a6ae');
+          var isNegative=bar.y>bar.base;
+          ctx.textBaseline=isNegative?'top':'bottom';
+          var yPos=isNegative?bar.y+3:bar.y-3;
+          var label=(val>0?'+':'')+val.toFixed(1)+'%';
+          ctx.fillText(label,bar.x,yPos);
+        }
+      });
+    });
+    ctx.restore();
+  }
+};
+
+function renderChart(e){
+  var h=e.history.slice().sort(function(a,b){return a.ano-b.ano});
+  var labels=h.map(function(x){return String(x.ano)});
+  var prices=h.map(function(x){return x.valor});
+
+  var depValues=h.map(function(x,i){
+    if(x.desval!=null&&Number.isFinite(x.desval)){
+      return Math.abs(x.desval)<=1?x.desval*100:x.desval;
+    }
+    if(i===0)return 0;
+    var prev=h[i-1].valor;
+    return prev?((x.valor-prev)/prev)*100:0;
+  });
+
+  var currentYear=new Date().getFullYear();
+  var idx=h.reduce(function(best,x,i){return x.ano===currentYear?i:best},-1);
+  if(idx<0)idx=h.length-1;
+
+  var priceColors=h.map(function(x,i){return i===idx?'#08c6d8':'#3e444c'});
+  var depColors=depValues.map(function(v){return v<0?'#ff7272':(v>0?'#38c98b':'#727780')});
+
+  if(chartInstance)chartInstance.destroy();
+
+  chartInstance=new Chart(document.getElementById('historyChart').getContext('2d'),{
+    type:'bar',
+    plugins:[labelPlugin],
+    data:{
+      labels:labels,
+      datasets:[
+        {
+          label:'Preço FIPE (R$)',
+          data:prices,
+          backgroundColor:priceColors,
+          borderColor:priceColors,
+          borderWidth:1,
+          borderRadius:4,
+          maxBarThickness:42,
+          yAxisID:'y',
+          order:2
+        },
+        {
+          label:'Depreciação / Variação (%)',
+          data:depValues,
+          backgroundColor:depColors,
+          borderColor:depColors,
+          borderWidth:1,
+          borderRadius:4,
+          maxBarThickness:32,
+          yAxisID:'y1',
+          order:1
+        }
+      ]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      layout:{padding:{top:26,right:12,left:4,bottom:0}},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{
+            label:function(c){
+              if(c.datasetIndex===0){
+                return ' Preço: '+currencyFmt.format(c.parsed.y);
+              }
+              return ' Variação: '+(c.parsed.y>0?'+':'')+c.parsed.y.toFixed(2)+'%';
+            }
+          }
+        }
+      },
+      scales:{
+        y:{
+          type:'linear',
+          position:'left',
+          beginAtZero:false,
+          ticks:{
+            color:'#a1a6ae',
+            font:{size:9},
+            callback:function(v){return currencyFmt.format(v)}
+          },
+          grid:{color:'#292c31'}
+        },
+        y1:{
+          type:'linear',
+          position:'right',
+          beginAtZero:false,
+          grid:{drawOnChartArea:false},
+          ticks:{
+            color:'#9da2aa',
+            font:{size:9},
+            callback:function(v){return v.toFixed(1)+'%'}
+          }
+        },
+        x:{
+          ticks:{color:'#a1a6ae',font:{size:9}},
+          grid:{display:false}
+        }
+      }
+    }
+  });
+
+  document.getElementById('chartPeriod').textContent=h.length?h[0].ano+' — '+h[h.length-1].ano:'';
+  document.getElementById('chartNote').textContent='O gráfico exibe o preço FIPE histórico (eixo esquerdo) e a taxa de depreciação/variação percentual anual (eixo direito).';
+}
+
+function renderSimilar(cod,e){
+  var target=e.latest.valor;
+  var normType=normalize(e.tipo);
+
+  var pool=ALL_LATEST.filter(function(x){
+    return normalize(x.tipo)===normType && x.cod!==cod && x.valor>0;
+  });
+
+  var candidateMap=new Map();
+  pool.forEach(function(x){
+    var diff=Math.abs(x.valor-target);
+    var pct=target?(diff/target)*100:0;
+    if(!candidateMap.has(x.modelo)||diff<candidateMap.get(x.modelo).diff){
+      candidateMap.set(x.modelo,{item:x,diff:diff,pct:pct});
+    }
+  });
+
+  var list=Array.from(candidateMap.values());
+  list.sort(function(a,b){return a.diff-b.diff});
+  list=list.slice(0,10);
+
+  var grid=document.getElementById('similarGrid');
+  grid.innerHTML='';
+  document.getElementById('similarSub').textContent='Veículos do mesmo tipo ('+e.tipo+') com valores próximos a '+currencyFmt.format(target)+'.';
+
+  if(!list.length){
+    grid.innerHTML='<div class="similar-empty">Nenhum veículo semelhante encontrado.</div>';
+    return;
+  }
+
+  list.forEach(function(w){
+    var x=w.item;
+    var a=document.createElement('a');
+    a.className='similar-card';
+    a.href='#codigo='+encodeURIComponent(x.cod);
+    var diffPct=target?((x.valor-target)/target*100):0;
+    var diffClass=diffPct>0?'positive':(diffPct<0?'negative':'');
+
+    a.innerHTML=
+      '<div class="model">'+escapeHtml(x.marca+' '+x.modelo)+'</div>'+
+      '<div class="version">'+escapeHtml(x.versao||'')+'</div>'+
+      '<div class="bottom">'+
+        '<span class="price">'+currencyFmt.format(x.valor)+'</span>'+
+        '<span class="diff '+diffClass+'">'+pctText(diffPct)+'</span>'+
+      '</div>'+
+      '<div class="action">Ver histórico e detalhes →</div>';
+
+    a.addEventListener('click',function(ev){
+      ev.preventDefault();
+      goToCode(x.cod);
+    });
+    grid.appendChild(a);
+  });
+}
+
 loadWorkbook();
 })();
 </script>
