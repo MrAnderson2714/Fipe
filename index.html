@@ -48,74 +48,76 @@
       z-index: 99;
     }
     
-    .wrap { display: grid; grid-template-columns: 320px 1fr; gap: 12px; padding: 12px; min-height: calc(100vh - 70px); }
+    .wrap { display: grid; grid-template-columns: 320px 1fr 380px; gap: 12px; padding: 12px; min-height: calc(100vh - 70px); }
     .sidebar { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; overflow-y: auto; max-height: calc(100vh - 90px); }
     .main { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+    .right-panel { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; overflow-y: auto; max-height: calc(100vh - 90px); }
     
     .section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 700; margin: 12px 0 8px; }
     .section-title:first-child { margin-top: 0; }
     
-    /* Dropdowns */
+    /* Dropdowns with search */
     .dropdown-wrapper { position: relative; margin-bottom: 8px; }
     .dropdown-label { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: var(--border); border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--text); user-select: none; transition: background 0.15s; }
     .dropdown-label:hover { background: #3a4555; }
     .dropdown-label.active { color: var(--accent); }
     .dropdown-icon { font-size: 10px; transition: transform 0.2s; }
     .dropdown-label.active .dropdown-icon { transform: rotate(180deg); }
+    .dropdown-search { padding: 6px 8px; background: var(--border); border: none; border-radius: 6px; color: var(--text); font-size: 11px; margin-bottom: 4px; }
     .dropdown-menu { display: none; position: absolute; top: calc(100% + 2px); left: 0; right: 0; background: var(--card); border: 1px solid var(--border); border-radius: 8px; z-index: 50; max-height: 200px; overflow-y: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
     .dropdown-menu.open { display: block; }
     .dropdown-item { padding: 8px 10px; font-size: 12px; cursor: pointer; border-bottom: 1px solid var(--border); transition: background 0.1s; color: var(--text-muted); }
     .dropdown-item:last-child { border-bottom: none; }
     .dropdown-item:hover { background: var(--border); color: var(--text); }
     .dropdown-item.active { background: rgba(0, 188, 212, 0.15); color: var(--accent); font-weight: 600; }
-    .dropdown-item.empty { text-align: center; color: var(--text-muted); padding: 12px; pointer-events: none; }
+    
+    /* Versão Buttons */
+    .versao-buttons { display: grid; grid-template-columns: 1fr; gap: 6px; max-height: 280px; overflow-y: auto; padding-right: 4px; }
+    .versao-btn { padding: 8px 10px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 11px; color: var(--text-muted); text-align: left; transition: all 0.15s; }
+    .versao-btn:hover { background: #3a4555; border-color: var(--accent); color: var(--text); }
+    .versao-btn.active { background: rgba(0, 188, 212, 0.15); border-color: var(--accent); color: var(--accent); font-weight: 600; }
     
     /* Status */
     .status-box { margin-top: 12px; border: 1px dashed var(--border); border-radius: 8px; padding: 8px; font-size: 11px; color: var(--text-muted); background: rgba(0,188,212,0.05); }
     
     /* Main Card (destaque) */
-    .main-highlight { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 4px; }
+    .main-highlight { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
     .highlight-badge { display: inline-block; background: rgba(0,188,212,0.15); color: var(--accent); padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; margin-bottom: 8px; }
     .highlight-title { font-size: 18px; font-weight: 700; margin: 0 0 4px; }
-    .highlight-subtitle { font-size: 12px; color: var(--text-muted); margin: 0 0 14px; }
-    .highlight-price { font-size: 28px; font-weight: 800; color: var(--accent); margin: 0 0 6px; }
-    .highlight-info { font-size: 11px; color: var(--text-muted); margin: 6px 0 0; line-height: 1.6; }
-    .highlight-info-row { display: flex; justify-content: space-between; padding: 2px 0; }
-    .highlight-info-label { color: var(--text-muted); }
+    .highlight-subtitle { font-size: 12px; color: var(--text-muted); margin: 0 0 12px; }
+    .highlight-price { font-size: 28px; font-weight: 800; color: var(--accent); margin: 0 0 4px; }
+    .highlight-info { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px; }
+    .highlight-info-item { display: flex; flex-direction: column; }
+    .highlight-info-label { color: var(--text-muted); margin-bottom: 2px; }
     .highlight-info-value { color: var(--text); font-weight: 600; }
     
     /* Cards Grid */
-    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+    .cards { display: flex; gap: 10px; justify-content: center; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; min-width: 140px; }
     .card-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 700; margin-bottom: 6px; }
     .card-value { font-size: 18px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
     .card-sub { font-size: 11px; color: var(--text-muted); }
     .card-value.positive { color: var(--good); }
     .card-value.negative { color: var(--danger); }
     
-    /* Chart Grid */
-    .grid-2 { display: grid; grid-template-columns: 1fr 380px; gap: 12px; }
-    .panel { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+    /* Chart Panel */
+    .chart-panel { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; flex: 1; min-width: 0; }
     .panel-title { font-size: 13px; font-weight: 700; margin: 0 0 8px; color: var(--text); }
     .panel-subtitle { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; }
-    .chart-container { position: relative; height: 320px; width: 100%; }
+    .chart-container { position: relative; height: 280px; width: 100%; }
     
-    /* Similar Grid (5 linhas, 2 colunas) */
-    .similar-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; max-height: 400px; overflow-y: auto; padding-right: 4px; }
+    /* Similar Grid (15 linhas, 2 colunas) */
+    .similar-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
     .similar-item { background: rgba(0,188,212,0.08); border: 1px solid var(--border); border-radius: 8px; padding: 10px; cursor: pointer; transition: all 0.15s; }
     .similar-item:hover { background: rgba(0,188,212,0.12); border-color: var(--accent); }
     .similar-name { font-size: 11px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
     .similar-price { font-size: 11px; color: var(--accent); font-weight: 700; margin-bottom: 2px; }
     .similar-details { font-size: 10px; color: var(--text-muted); }
-    .empty { text-align: center; color: var(--text-muted); font-size: 11px; padding: 12px; }
+    .empty { text-align: center; color: var(--text-muted); font-size: 11px; padding: 12px; grid-column: 1/-1; }
     
-    @media (max-width: 1200px) {
-      .cards { grid-template-columns: repeat(2, 1fr); }
-      .grid-2 { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 900px) {
+    @media (max-width: 1400px) {
       .wrap { grid-template-columns: 1fr; }
-      .sidebar { max-height: none; }
+      .sidebar, .right-panel { max-height: none; }
     }
   </style>
 </head>
@@ -132,6 +134,7 @@
     <!-- Tipo de Veículo -->
     <div class="section-title">Tipo</div>
     <div class="dropdown-wrapper">
+      <input type="text" class="dropdown-search" id="tipoSearch" placeholder="Buscar..." style="display:none;">
       <div class="dropdown-label" onclick="toggleDropdown('tipo')">
         <span id="tipoLabel">Selecione...</span>
         <span class="dropdown-icon">▼</span>
@@ -142,6 +145,7 @@
     <!-- Marca -->
     <div class="section-title">Marca</div>
     <div class="dropdown-wrapper">
+      <input type="text" class="dropdown-search" id="marcaSearch" placeholder="Buscar..." style="display:none;">
       <div class="dropdown-label" onclick="toggleDropdown('marca')">
         <span id="marcaLabel">Selecione...</span>
         <span class="dropdown-icon">▼</span>
@@ -152,6 +156,7 @@
     <!-- Modelo -->
     <div class="section-title">Modelo</div>
     <div class="dropdown-wrapper">
+      <input type="text" class="dropdown-search" id="modeloSearch" placeholder="Buscar..." style="display:none;">
       <div class="dropdown-label" onclick="toggleDropdown('modelo')">
         <span id="modeloLabel">Selecione...</span>
         <span class="dropdown-icon">▼</span>
@@ -159,15 +164,9 @@
       <div class="dropdown-menu" id="modeloMenu"></div>
     </div>
 
-    <!-- Versão -->
+    <!-- Versão (Buttons) -->
     <div class="section-title">Versão</div>
-    <div class="dropdown-wrapper">
-      <div class="dropdown-label" onclick="toggleDropdown('versao')">
-        <span id="versaoLabel">Selecione...</span>
-        <span class="dropdown-icon">▼</span>
-      </div>
-      <div class="dropdown-menu" id="versaoMenu"></div>
-    </div>
+    <div class="versao-buttons" id="versaoButtons"></div>
 
     <div class="status-box" id="statusBox">Carregando base de dados...</div>
   </aside>
@@ -180,36 +179,35 @@
       <div class="highlight-subtitle" id="highlightSubtitle">--</div>
       <div class="highlight-price" id="highlightPrice">--</div>
       <div class="highlight-info">
-        <div class="highlight-info-row">
-          <span class="highlight-info-label">Tipo:</span>
+        <div class="highlight-info-item">
+          <span class="highlight-info-label">Tipo</span>
           <span class="highlight-info-value" id="infoHighlightTipo">--</span>
         </div>
-        <div class="highlight-info-row">
-          <span class="highlight-info-label">Marca:</span>
+        <div class="highlight-info-item">
+          <span class="highlight-info-label">Marca</span>
           <span class="highlight-info-value" id="infoHighlightMarca">--</span>
         </div>
-        <div class="highlight-info-row">
-          <span class="highlight-info-label">Modelo:</span>
+        <div class="highlight-info-item">
+          <span class="highlight-info-label">Modelo</span>
           <span class="highlight-info-value" id="infoHighlightModelo">--</span>
         </div>
-        <div class="highlight-info-row">
-          <span class="highlight-info-label">Combustível:</span>
+        <div class="highlight-info-item">
+          <span class="highlight-info-label">Combustível</span>
           <span class="highlight-info-value" id="infoHighlightComb">--</span>
         </div>
-        <div class="highlight-info-row">
-          <span class="highlight-info-label">Ano modelo:</span>
+        <div class="highlight-info-item">
+          <span class="highlight-info-label">Ano modelo</span>
           <span class="highlight-info-value" id="infoHighlightAno">--</span>
+        </div>
+        <div class="highlight-info-item">
+          <span class="highlight-info-label">Período</span>
+          <span class="highlight-info-value" id="infoHighlightPeriodo">--</span>
         </div>
       </div>
     </div>
 
     <!-- Cards de Informações -->
     <div class="cards">
-      <div class="card">
-        <div class="card-label">Período</div>
-        <div class="card-value" id="cardPeriodo">--</div>
-        <div class="card-sub" id="cardPeriodoSub">--</div>
-      </div>
       <div class="card">
         <div class="card-label">Variação</div>
         <div class="card-value" id="cardVariacao">--</div>
@@ -222,23 +220,21 @@
       </div>
     </div>
 
-    <!-- Gráfico + Similares -->
-    <div class="grid-2">
-      <div class="panel">
-        <div class="panel-title">Histórico de Valores</div>
-        <div class="panel-subtitle">Evolução por ano disponível</div>
-        <div class="chart-container">
-          <canvas id="historyChart"></canvas>
-        </div>
-      </div>
-
-      <div class="panel">
-        <div class="panel-title">Modelos Similares</div>
-        <div class="panel-subtitle">Mesmo segmento e valor próximo</div>
-        <div class="similar-grid" id="similarList"></div>
+    <!-- Gráfico -->
+    <div class="chart-panel">
+      <div class="panel-title">Histórico de Valores</div>
+      <div class="panel-subtitle">Evolução por ano disponível</div>
+      <div class="chart-container">
+        <canvas id="historyChart"></canvas>
       </div>
     </div>
   </main>
+
+  <aside class="right-panel">
+    <div class="panel-title">Modelos Similares</div>
+    <div class="panel-subtitle" id="similarSubtitle">Mesmo segmento e valor próximo</div>
+    <div class="similar-grid" id="similarList"></div>
+  </aside>
 </div>
 
 <script>
@@ -250,6 +246,7 @@ let currentSelection = null;
 let myChart = null;
 let filters = { tipo: null, marca: null, modelo: null, versao: null };
 let openDropdown = null;
+let selectedBarValue = null;
 
 function normaliza(str) {
   return String(str || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
@@ -272,15 +269,40 @@ function updateStatus(msg) {
 
 function toggleDropdown(name) {
   const menu = document.getElementById(name + 'Menu');
-  if (openDropdown && openDropdown !== menu) openDropdown.classList.remove('open');
+  const search = document.getElementById(name + 'Search');
+  if (openDropdown && openDropdown !== menu) {
+    openDropdown.classList.remove('open');
+    const prevSearch = openDropdown.previousElementSibling;
+    if (prevSearch && prevSearch.classList.contains('dropdown-search')) {
+      prevSearch.style.display = 'none';
+      prevSearch.value = '';
+    }
+  }
   menu.classList.toggle('open');
+  if (search) search.style.display = menu.classList.contains('open') ? 'block' : 'none';
   openDropdown = menu.classList.contains('open') ? menu : null;
 }
 
 function closeAllDropdowns() {
   document.querySelectorAll('.dropdown-menu.open').forEach(m => m.classList.remove('open'));
+  document.querySelectorAll('.dropdown-search').forEach(s => s.style.display = 'none');
   openDropdown = null;
 }
+
+['tipoSearch', 'marcaSearch', 'modeloSearch'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener('input', (e) => {
+      const name = id.replace('Search', '');
+      const menu = document.getElementById(name + 'Menu');
+      const q = normaliza(e.target.value);
+      const items = menu.querySelectorAll('.dropdown-item');
+      items.forEach(item => {
+        item.style.display = normaliza(item.textContent).includes(q) ? 'block' : 'none';
+      });
+    });
+  }
+});
 
 async function loadExcel() {
   try {
@@ -391,7 +413,7 @@ function selectTipo(tipo) {
 
   document.getElementById('marcaLabel').textContent = 'Selecione...';
   document.getElementById('modeloLabel').textContent = 'Selecione...';
-  document.getElementById('versaoLabel').textContent = 'Selecione...';
+  document.getElementById('versaoButtons').innerHTML = '';
   selectMarca(marcas[0]);
 }
 
@@ -414,7 +436,7 @@ function selectMarca(marca) {
   });
 
   document.getElementById('modeloLabel').textContent = 'Selecione...';
-  document.getElementById('versaoLabel').textContent = 'Selecione...';
+  document.getElementById('versaoButtons').innerHTML = '';
   selectModelo(modelos[0]);
 }
 
@@ -425,29 +447,32 @@ function selectModelo(modelo) {
   closeAllDropdowns();
 
   const versoes = allData.filter(d => d.tipo === filters.tipo && d.marca === filters.marca && d.modelo === modelo);
-  const versaoMenu = document.getElementById('versaoMenu');
-  versaoMenu.innerHTML = '';
+  const versaoDiv = document.getElementById('versaoButtons');
+  versaoDiv.innerHTML = '';
   versoes.forEach(v => {
-    const item = document.createElement('div');
-    item.className = 'dropdown-item';
-    item.textContent = v.versao || '(sem versão)';
-    item.addEventListener('click', () => selectVersao(v));
-    versaoMenu.appendChild(item);
+    const btn = document.createElement('div');
+    btn.className = 'versao-btn';
+    const anoDeParaStr = v.historico.length > 1 
+      ? `${v.historico[0].ano}-${v.historico[v.historico.length-1].ano}` 
+      : v.latest.ano;
+    btn.textContent = `${v.versao || '(sem versão)'} • ${v.latest.combustivel || '—'} • ${anoDeParaStr}`;
+    btn.addEventListener('click', () => selectVersao(v));
+    versaoDiv.appendChild(btn);
   });
 
-  document.getElementById('versaoLabel').textContent = 'Selecione...';
   if (versoes.length > 0) selectVersao(versoes[0]);
 }
 
 function selectVersao(veiculo) {
   filters.versao = veiculo.codigo;
-  document.getElementById('versaoLabel').textContent = veiculo.versao || '(sem versão)';
+  document.querySelectorAll('.versao-btn').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
   selectVehicle(veiculo);
-  closeAllDropdowns();
 }
 
 function selectVehicle(data) {
   currentSelection = data;
+  selectedBarValue = null;
   const historico = data.historico;
   
   document.getElementById('highlightBadge').textContent = data.codigo;
@@ -463,8 +488,7 @@ function selectVehicle(data) {
 
   const anos = historico.map(h => h.ano).sort((a, b) => a - b);
   const periodoStr = anos.length > 0 ? `${anos[0]}-${anos[anos.length-1]}` : '--';
-  document.getElementById('cardPeriodo').textContent = periodoStr;
-  document.getElementById('cardPeriodoSub').textContent = `${anos.length} ano${anos.length === 1 ? '' : 's'}`;
+  document.getElementById('infoHighlightPeriodo').textContent = periodoStr;
 
   document.getElementById('cardHistorico').textContent = historico.length;
   document.getElementById('cardHistoricoSub').textContent = `Registros totais`;
@@ -566,18 +590,27 @@ function renderChart(historico) {
     },
     plugins: [chartPlugin]
   });
+
+  // Clique nas barras
+  ctx.canvas.addEventListener('click', (e) => {
+    const rect = ctx.canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const canvasPosition = Chart.helpers.getRelativePosition(e, myChart);
+    const dataX = myChart.scales.x.getValueForPixel(canvasPosition.x);
+    
+    if (dataX >= 0 && dataX < values.length) {
+      const idx = Math.round(dataX);
+      selectedBarValue = values[idx];
+      renderSimilar(currentSelection, historico, selectedBarValue);
+    }
+  });
 }
 
-function renderSimilar(vData, historico) {
-  if (historico.length === 0) {
-    document.getElementById('similarList').innerHTML = '<div class="empty">Nenhum dado disponível</div>';
-    return;
-  }
-
-  const target = historico[historico.length - 1].valor;
+function renderSimilar(vData, historico, barValue = null) {
+  const target = barValue !== null ? barValue : historico[historico.length - 1].valor;
   const margin = target * 0.15;
   
-  // Filtra similares e embaralha entre marcas diferentes
   const similares = allData
     .filter(d => 
       d.tipo === vData.tipo && 
@@ -585,10 +618,18 @@ function renderSimilar(vData, historico) {
       d.latest.valor >= target - margin && 
       d.latest.valor <= target + margin
     )
-    .sort(() => Math.random() - 0.5) // Embaralha aleatoriamente
-    .slice(0, 10); // Pega 10 para a grade 5x2
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 30);
 
   const div = document.getElementById('similarList');
+  const subtitle = document.getElementById('similarSubtitle');
+  
+  if (barValue !== null) {
+    subtitle.textContent = `Similares ao valor de ${fmt(barValue)}`;
+  } else {
+    subtitle.textContent = `Mesmo segmento e valor próximo`;
+  }
+
   if (similares.length === 0) {
     div.innerHTML = '<div class="empty">Nenhum modelo similar</div>';
     return;
