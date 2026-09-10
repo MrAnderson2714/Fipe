@@ -1,368 +1,323 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Consulta Tabela FIPE</title>
-  
-  <!-- CORREÇÃO ERRO 1 e 3: Importação obrigatória das bibliotecas no <head> -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
-  <style>
-    :root {
-      --bg-dark: #0f1319;
-      --card-bg: #161c24;
-      --card-border: #232d39;
-      --accent-blue: #00bcd4;
-      --text-main: #f3f4f6;
-      --text-muted: #9ca3af;
-      --red-alert: #5c1d24;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-    body { background-color: var(--bg-dark); color: var(--text-main); padding: 20px; }
-
-    /* Alerta de Erro Topo */
-    #errorBanner {
-      display: none;
-      background-color: var(--red-alert);
-      color: #fca5a5;
-      padding: 12px 16px;
-      border-radius: 6px;
-      margin-bottom: 20px;
-      font-size: 14px;
-      border: 1px solid #7f1d1d;
-    }
-
-    /* Search Bar */
-    .search-box {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      padding: 20px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-    }
-    .search-box input {
-      width: 100%;
-      padding: 12px 16px;
-      background: #0f1319;
-      border: 1px solid var(--card-border);
-      border-radius: 6px;
-      color: #fff;
-      font-size: 15px;
-    }
-
-    /* Grid Layout */
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: 300px 1fr 280px;
-      gap: 20px;
-      align-items: start;
-    }
-
-    /* CORREÇÃO ERRO 2: Sidebar com rolagem interna para não sumir/cortar menus */
-    .sidebar {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 16px;
-      max-height: calc(100vh - 180px); /* Evita extrapolar a tela */
-      overflow-y: auto; /* Adiciona barra de rolagem */
-    }
-
-    .filter-group { margin-bottom: 16px; }
-    .filter-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; font-weight: bold; }
-    .filter-group select, .filter-group input {
-      width: 100%;
-      padding: 10px;
-      background: #0f1319;
-      border: 1px solid var(--card-border);
-      border-radius: 6px;
-      color: #fff;
-    }
-
-    /* Lista de Versões com Scroll Próprio */
-    .versions-list {
-      max-height: 280px;
-      overflow-y: auto;
-      border: 1px solid var(--card-border);
-      border-radius: 6px;
-      background: #0f1319;
-    }
-    .version-item {
-      padding: 10px;
-      border-bottom: 1px solid var(--card-border);
-      cursor: pointer;
-      font-size: 13px;
-    }
-    .version-item:hover, .version-item.active { background: #1f2937; color: var(--accent-blue); }
-
-    /* Main Chart Card */
-    .main-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 24px;
-    }
-    .vehicle-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
-    .fipe-badge { background: #00838f; color: #fff; padding: 3px 8px; font-size: 11px; border-radius: 4px; font-weight: bold; }
-    .vehicle-price { font-size: 28px; font-weight: bold; }
-
-    /* CORREÇÃO ERRO 3: Container com altura definida para o Chart.js */
-    .chart-container {
-      position: relative;
-      height: 320px;
-      width: 100%;
-      margin: 20px 0;
-      background: #0f1319;
-      border-radius: 6px;
-      padding: 10px;
-    }
-
-    /* Stats Grid */
-    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px; }
-    .stat-box { background: #0f1319; border: 1px solid var(--card-border); padding: 12px; border-radius: 6px; text-align: center; }
-    .stat-box span { display: block; font-size: 11px; color: var(--text-muted); }
-    .stat-box strong { font-size: 16px; color: #10b981; }
-
-    /* Side Panel: Veículos Semelhantes */
-    .similar-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 16px;
-    }
-    .similar-card h3 { font-size: 13px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; }
-    .similar-item {
-      padding: 10px;
-      background: #0f1319;
-      border: 1px solid var(--card-border);
-      border-radius: 6px;
-      margin-bottom: 8px;
-    }
-    .similar-item .name { font-size: 13px; font-weight: bold; margin-bottom: 4px; }
-    .similar-item .price { font-size: 12px; color: var(--accent-blue); }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="expires" content="0" />
+<title>Dashboard de Quebra de Agenda v3.0</title>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<style>
+:root{--claro-red:#DA291C;--claro-red-dark:#AF272F;--claro-gray:#A7A8AA;--claro-ink:#2D291C;--claro-teal:#0097A9;--claro-orange:#F5842B;--bg:#f5f6f8;--card:#fff;--line:#e2e6ea;--good:#22863a;--warn:#b88200;--bad:#cf222e;--muted:#6b7280}
+*{box-sizing:border-box} body{margin:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:var(--bg);color:var(--claro-ink)}
+.topbar{background:linear-gradient(90deg,var(--claro-red),var(--claro-red-dark));color:#fff;padding:9px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.topbar h1{margin:0;font-size:22px}.subtitle{font-size:11px;opacity:.94;margin-top:2px}.topbar-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}.badge{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);padding:7px 10px;border-radius:999px;font-size:11px}.sync-badge{font-weight:700}.sync-pending{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.22);color:#fff}.sync-ok{background:rgba(34,134,58,.18);border-color:rgba(255,255,255,.32);color:#fff}.sync-error{background:rgba(207,34,46,.22);border-color:rgba(255,255,255,.34);color:#fff}.btn{border:none;padding:8px 10px;background:#fff;color:var(--claro-red);border-radius:10px;font-weight:700;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.08);font-size:12px}.btn.secondary{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25)}
+.wrap{display:grid;grid-template-columns:290px 1fr;gap:10px;padding:10px;min-height:calc(100vh - 66px)}.sidebar,.panel,.card{background:var(--card);border:1px solid var(--line);border-radius:14px}.sidebar{padding:10px;overflow:auto}.panel{padding:10px}.main{display:flex;flex-direction:column;gap:10px;min-width:0}
+.section-title{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:700;margin:0 0 6px}.filters{display:grid;gap:7px}.filter-group label{display:block;font-size:11px;font-weight:700;margin-bottom:3px;color:#374151}.filter-group select,.filter-group input,.table-toolbar input{width:100%;padding:7px 9px;border:1px solid #d1d5db;border-radius:10px;background:#fff;color:#111827;font-size:12px}.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;min-height:24px}.chip{background:#fff5f4;color:var(--claro-red-dark);border:1px solid #ffd2cd;padding:3px 7px;border-radius:999px;font-size:10px}.small-note,.helper,.footnote{font-size:10px;color:var(--muted);line-height:1.3}.status-box{margin-top:10px;border:1px dashed #d1d5db;border-radius:12px;padding:8px;font-size:11px;color:#374151;background:#fafafa}
+.cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.card{padding:10px;min-height:78px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 1px 1px rgba(0,0,0,.02)}.card .label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}.card .value{font-size:24px;font-weight:800;line-height:1.02;margin-top:6px}.card .sub{font-size:11px;color:var(--muted);margin-top:4px}.good{color:var(--good)}.warn{color:var(--warn)}.bad{color:var(--bad)}
+.grid-2{display:grid;grid-template-columns:1.9fr 1.05fr;gap:10px;min-width:0}.grid-bottom{display:grid;grid-template-columns:1fr 1fr;gap:10px;min-width:0;align-items:stretch}.grid-bottom>.panel{min-width:0}.grid-bottom>.panel:not(.pr-box){height:430px;min-height:430px;display:flex;flex-direction:column;overflow:hidden}.grid-bottom>.panel:not(.pr-box) .table-wrap{flex:1;max-height:none;min-height:0}.grid-bottom>.panel:not(.pr-box) #focusBox{flex:1;min-height:0;display:flex;flex-direction:column}.grid-bottom>.pr-box{grid-column:1 / -1;min-height:240px}.head-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--muted)}.legend-item{display:flex;align-items:center;gap:5px}.dot{width:10px;height:10px;border-radius:50%;display:inline-block}.red{background:var(--claro-red)}.teal{background:var(--claro-teal)}.gray{background:var(--claro-gray)} svg{width:100%;height:auto;display:block}.empty{color:var(--muted);font-size:12px;padding:12px;text-align:center}.kicker{color:var(--muted);font-size:11px}
+.pareto-bars{display:flex;flex-direction:column;gap:7px;padding-top:2px}.bar-row{display:grid;grid-template-columns:88px 1fr auto;gap:7px;align-items:center;font-size:11px}.bar-label{font-weight:700;color:#374151;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bar-track{height:20px;background:#f1f3f5;border-radius:999px;position:relative;overflow:hidden;border:1px solid #e5e7eb}.bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--claro-red),var(--claro-orange));position:relative}.bar-fill span{position:absolute;right:8px;top:50%;transform:translateY(-50%);color:#fff;font-weight:700;font-size:10px;text-shadow:0 1px 0 rgba(0,0,0,.18)}.bar-value{font-weight:700;color:#111827;min-width:66px;text-align:right}
+.table-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px;align-items:center}.table-wrap{max-height:246px;overflow:auto;border:1px solid var(--line);border-radius:12px}table{width:100%;border-collapse:collapse;font-size:11px;background:#fff}thead th{position:sticky;top:0;background:#fff8f7;z-index:1;border-bottom:1px solid #e5e7eb;color:#7c2d12;text-align:left;padding:7px 7px;cursor:pointer;white-space:nowrap}tbody td{border-bottom:1px solid #f0f2f4;padding:5px 7px;line-height:1.15}tbody tr:hover{background:#fffaf9}.align-right{text-align:right}.pill{display:inline-flex;align-items:center;gap:5px;padding:3px 7px;border-radius:999px;font-weight:700;font-size:10px}.pill.good{background:#e9f7ee;color:#19713b}.pill.warn{background:#fff6da;color:#8a6a00}.pill.bad{background:#fceceb;color:#b42318}
+.pr-box{min-height:246px}.summary{background:#fff8f7;border:1px solid #ffd9d3;padding:10px;border-radius:12px;font-size:12px;line-height:1.38;margin-bottom:9px}.bullet-list{margin:0;padding-left:18px;display:grid;gap:8px}.color-good{color:var(--good);font-weight:700}.color-warn{color:var(--warn);font-weight:700}.color-bad{color:var(--bad);font-weight:700}
+@media (max-width:1400px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}.grid-bottom,.grid-2{grid-template-columns:1fr}.grid-bottom>.panel:not(.pr-box){height:auto;min-height:0}} @media (max-width:1100px){.wrap{grid-template-columns:1fr}.topbar{position:static}} @media (max-width:640px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.topbar h1{font-size:18px}.topbar-right{justify-content:flex-start}.badge{width:100%;border-radius:12px}}
+</style>
 </head>
 <body>
-
-  <!-- Alerta de Erro -->
-  <div id="errorBanner"></div>
-
-  <!-- Busca Superior -->
-  <div class="search-box">
-    <h3 style="margin-bottom: 8px;">Encontre seu veículo</h3>
-    <input type="text" id="searchInput" placeholder="Ex.: Ford EcoSport, Civic, 038003-2...">
+<div class="topbar">
+  <div>
+    <h1>Dashboard de Quebra de Agenda • v3.0</h1>
+    <div class="subtitle">IND Quebra = Quebra / Total • ADE Checklist = N / Total • Metas: Quebra ≤ 20% | Checklist ≥ 80%</div>
   </div>
-
-  <!-- Grid Principal -->
-  <div class="dashboard-grid">
-    
-    <!-- Painel Lateral / Filtros -->
-    <div class="sidebar">
-      <h4 style="margin-bottom: 16px; font-size: 14px;">REFINE SUA CONSULTA</h4>
-      
-      <div class="filter-group">
-        <label>1. Tipo de Veículo</label>
-        <select id="vehicleType">
-          <option value="carro">Carro</option>
-          <option value="moto">Moto</option>
-          <option value="caminhao">Caminhão</option>
-        </select>
-      </div>
-
-      <div class="filter-group">
-        <label>2. Marca</label>
-        <input type="text" id="brandInput" value="Ford">
-      </div>
-
-      <div class="filter-group">
-        <label>3. Modelo</label>
-        <input type="text" id="modelInput" value="EcoSport">
-      </div>
-
-      <div class="filter-group">
-        <label>4. Versões / Códigos FIPE</label>
-        <div class="versions-list" id="versionsList">
-          <!-- Injetado dinamicamente -->
-        </div>
-      </div>
-    </div>
-
-    <!-- Painel Central / Gráfico e Detalhes -->
-    <div class="main-card">
-      <div class="vehicle-header">
-        <div>
-          <span class="fipe-badge" id="fipeCode">CÓDIGO FIPE 003374-0</span>
-          <h2 style="margin-top: 8px;" id="vehicleTitle">EcoSport — TITANIUM 2.0 16V Flex 5p Aut.</h2>
-          <small style="color: var(--text-muted);" id="vehicleSubtitle">Carro · Ford</small>
-        </div>
-        <div class="vehicle-price" id="vehiclePrice">R$ 76.152</div>
-      </div>
-
-      <!-- CORREÇÃO ERRO 3: Elemento Canvas do Chart.js -->
-      <div class="chart-container">
-        <canvas id="chartDepreciacao"></canvas>
-      </div>
-
-      <div class="stats-grid">
-        <div class="stat-box"><span>Média do histórico</span><strong>+25.06%</strong></div>
-        <div class="stat-box"><span>Últimos 3 períodos</span><strong>+27.13%</strong></div>
-        <div class="stat-box"><span>Últimos 6 períodos</span><strong>+47.28%</strong></div>
-        <div class="stat-box"><span>Últimos 12 períodos</span><strong>+50.97%</strong></div>
-      </div>
-    </div>
-
-    <!-- Painel Direito: Veículos Semelhantes (CORREÇÃO ERRO 4) -->
-    <div class="similar-card">
-      <h3>VEÍCULOS DE PREÇO SEMELHANTE</h3>
-      <div id="similaresContainer">
-        <!-- Injetado via JS -->
-      </div>
-    </div>
-
+  <div class="topbar-right">
+    <div class="badge" id="badgePeriodo">Período: --</div>
+    <div class="badge" id="badgeAtualizacao">Atualização: --</div>
+    <div class="badge sync-badge sync-pending" id="badgeSyncStatus">Sincronização: aguardando carga inicial</div>
+    <div class="badge" id="badgeSyncTime">Última sincronização: --</div>
+    <button class="btn secondary" id="btnReloadEmbedded">Atualizar do repositório</button>
+    <button class="btn" id="btnExportPng">Exportar PNG</button>
+    <button class="btn" id="btnSaveHtml">Baixar HTML</button>
   </div>
+</div>
+<div class="wrap" id="dashboardRoot">
+  <aside class="sidebar">
+    <div class="section-title">Filtros</div>
+    <div class="filters" id="filters"></div>
+    <div class="section-title" style="margin-top:10px">Filtros ativos</div>
+    <div class="chips" id="activeChips"></div>
+    <button class="btn" id="btnClearFilters" style="width:100%;margin-top:6px">Limpar filtros</button>
+    <div class="small-note">Versão 3.0 compacta: leitura do arquivo <strong>IND_QUEBRA.xlsx</strong> publicado no mesmo repositório do GitHub no carregamento da página. Para atualizar o dashboard após trocar o Excel, use <strong>F5</strong> ou o botão <strong>Atualizar do repositório</strong>.</div>
+    <div class="status-box" id="statusBox">Aguardando leitura do arquivo do repositório no carregamento da página...</div>
+  </aside>
+  <main class="main">
+    <section class="cards">
+      <div class="card"><div class="label">Atualização</div><div class="value" id="cardAtualizacao">--</div><div class="sub" id="cardAtualizacaoSub">Última agenda da base</div></div>
+      <div class="card"><div class="label">IND Quebra</div><div class="value" id="cardIndicador">--</div><div class="sub" id="cardIndicadorSub">Meta ≤ 20%</div></div>
+      <div class="card"><div class="label">ADE Checklist</div><div class="value" id="cardChecklist">--</div><div class="sub" id="cardChecklistSub">Meta ≥ 80%</div></div>
+      <div class="card"><div class="label">Total</div><div class="value" id="cardTotal">--</div><div class="sub">Volume no corte atual</div></div>
+      <div class="card"><div class="label">Total Quebra</div><div class="value" id="cardQuebra">--</div><div class="sub">Quebras acumuladas</div></div>
+    </section>
+    <section class="grid-2">
+      <div class="panel">
+        <div class="head-row">
+          <h3 style="margin:0;font-size:16px">Indicador Diário • Quebra x ADE Checklist</h3>
+          <div class="legend">
+            <span class="legend-item"><span class="dot red"></span>IND Quebra</span>
+            <span class="legend-item"><span class="dot teal"></span>ADE Checklist</span>
+            <span class="legend-item"><span class="dot gray"></span>Metas</span>
+          </div>
+        </div>
+        <div class="kicker">Barras diárias em vermelho para quebra e azul/turquesa para checklist, mantendo o mesmo eixo percentual e as metas de referência.</div>
+        <div id="dailyChart"></div>
+      </div>
+      <div class="panel">
+        <div class="head-row"><h3 style="margin:0;font-size:16px">Pareto de Causa Raiz</h3><div class="legend"><span class="legend-item"><span class="dot teal"></span>Top códigos de baixa</span></div></div>
+        <div class="kicker">Participação sobre as quebras do recorte atual.</div>
+        <div id="paretoChart" class="pareto-bars"></div>
+      </div>
+    </section>
+    <section class="grid-bottom">
+      <div class="panel">
+        <div class="head-row"><h3 style="margin:0;font-size:16px">Resumo por Canal + Equipe</h3><div class="helper">Classificação por recuperação da quebra decrescente</div></div>
+        <div class="table-toolbar"><input type="search" id="tableSearch" placeholder="Buscar canal ou equipe..." /><span class="helper" id="tableInfo">-- linhas</span></div>
+        <div class="table-wrap"><table><thead><tr>
+          <th data-sort="canal">Canal Grupo</th>
+          <th data-sort="equipe">Equipe</th>
+          <th data-sort="total" class="align-right">Total</th>
+          <th data-sort="quebra" class="align-right">Quebras</th>
+          <th data-sort="recovery" class="align-right">Recuperação</th>
+          <th data-sort="indicador" class="align-right">IND Quebra</th>
+          <th data-sort="ade" class="align-right">ADE Checklist</th>
+        </tr></thead><tbody id="tableBody"></tbody></table></div>
+        <div class="footnote">Clique no cabeçalho para ordenar. A ordenação padrão prioriza a recuperação da quebra em ordem decrescente, mantendo os mesmos indicadores operacionais.</div>
+      </div>
+      <div class="panel">
+        <div class="head-row"><h3 style="margin:0;font-size:16px">Ranking das Cidades Ofensoras</h3><div class="helper">Tabela das cidades com maior necessidade de recuperação</div></div>
+        <div id="focusBox"></div>
+      </div>
+      <div class="panel pr-box">
+        <div class="head-row"><h3 style="margin:0;font-size:16px">P&R • Análise Crítica</h3><div class="helper">Síntese executiva do recorte filtrado</div></div>
+        <div class="summary" id="summaryBox">--</div><ul class="bullet-list" id="prList"></ul>
+        <div class="footnote">A análise cruza volume, quebra, aderência ao checklist e ofensores operacionais do recorte filtrado.</div>
+      </div>
+    </section>
+  </main>
+</div>
+<script>
+/*__EMBEDDED_FIELDS_START__*/const EMBEDDED_FIELDS = ["dt_agenda", "anomes", "ibge", "grupo", "uf", "cluster", "cidade", "segmento", "grupo_os", "tipo_os", "novo_domicilio", "grupo_canais", "cod_baixa", "dsc_baixa", "quebra", "total", "checklist_n", "canal_grupo", "canal_subgrupo", "equipe_venda"];/*__EMBEDDED_FIELDS_END__*/
+/*__EMBEDDED_ROWS_START__*/const EMBEDDED_ROWS = [];/*__EMBEDDED_ROWS_END__*/
+/*__EMBEDDED_META_START__*/const EMBEDDED_META = {generated_at:"", max_dt_agenda:"", rows_merged:0, join_rate:0, source_label:"Repositório GitHub"};/*__EMBEDDED_META_END__*/
+/*__EMBEDDED_XLSX_START__*/const EMBEDDED_XLSX_BASE64 = "";/*__EMBEDDED_XLSX_END__*/
+const REPO_EXCEL_PATH = "./IND_QUEBRA.xlsx";
+const REPO_FETCH_TIMEOUT_MS = 30000;
+const UI_STORAGE_KEY = "dashboard_quebra_agenda_v3_ui";
+const idx = Object.fromEntries(EMBEDDED_FIELDS.map((f,i)=>[f,i]));
+const FILTERS=[
+  {key:'grupo',label:'Grupo',type:'single'},
+  {key:'uf',label:'UF',type:'single'},
+  {key:'cluster',label:'Cluster',type:'single'},
+  {key:'cidade',label:'Cidade',type:'single'},
+  {key:'anomes',label:'Ano/Mês',type:'single'},
+  {key:'grupo_os',label:'Grupo OS',type:'single'},
+  {key:'tipo_os',label:'Tipo OS',type:'single'},
+  {key:'novo_domicilio',label:'Novo Domicílio',type:'single'},
+  {key:'grupo_canais',label:'Grupo de Canais',type:'single'},
+  {key:'canal_grupo',label:'Canal Grupo',type:'single'}
+];
+const DEFAULT_FILTERS={grupo:'Todos',uf:'Todos',cluster:'Todos',cidade:'Todos',anomes:'Todos',grupo_os:'Todos',tipo_os:'Todos',novo_domicilio:'Todos',grupo_canais:'Todos',canal_grupo:'Todos'};
+const state={rows:EMBEDDED_ROWS,filters:{...DEFAULT_FILTERS},sort:{key:'recovery',dir:'desc'},search:'',baseLabel:'Aguardando arquivo do repositório',rawWorkbookBase64:EMBEDDED_XLSX_BASE64,lastRepoCheck:'',lastLoadedHash:'',lastSyncStatus:'pending',lastSyncSuccess:'',lastSyncAttempt:'',lastSyncError:''};
+const fmtInt=new Intl.NumberFormat('pt-BR',{maximumFractionDigits:0}), fmtPct=new Intl.NumberFormat('pt-BR',{style:'percent',minimumFractionDigits:1,maximumFractionDigits:1}), fmtDate=new Intl.DateTimeFormat('pt-BR'), fmtDateTime=new Intl.DateTimeFormat('pt-BR',{dateStyle:'short',timeStyle:'medium'});
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function num(v){if(v==null||v==='') return 0; if(typeof v==='number') return Number.isFinite(v)?v:0; const x=String(v).replace(/\./g,'').replace(',','.'); const n=Number(x); return Number.isFinite(n)?n:0}
+function uniq(arr){return Array.from(new Set(arr.filter(v=>v!=null&&v!==''))).sort((a,b)=>String(a).localeCompare(String(b),'pt-BR'))}
+function parseDate(v){if(!v) return null; const d=new Date(v+'T00:00:00'); return isNaN(d)?null:d}
+function rateClass(rate){return rate<=0.20?'good':rate<=0.25?'warn':'bad'}
+function checklistClass(rate){return rate>=0.80?'good':rate>=0.70?'warn':'bad'}
+function rateText(rate){return rate<=0.20?'Dentro da meta':rate<=0.25?'Atenção':'Crítico'}
+function checklistText(rate){return rate>=0.80?'Aderência saudável':rate>=0.70?'Aderência em atenção':'Baixa aderência'}
+function deltaText(delta){const signal=delta>0?'+':''; return signal+(delta*100).toFixed(1).replace('.',',')+' p.p.'}
 
-  <script>
-    // Base de dados simulada/fallback para garantir que o app funcione independente do Excel
-    let baseDados = [
-      { codigoFipe: "003374-0", marca: "Ford", modelo: "EcoSport", versao: "TITANIUM 2.0 16V Flex 5p Aut.", ano: 2018, valor: 76152, historico: [52000, 58000, 64000, 71000, 76152] },
-      { codigoFipe: "003472-0", marca: "Ford", modelo: "EcoSport", versao: "100 Anos 1.5 Flex 5p Aut.", ano: 2019, valor: 72842, historico: [50000, 55000, 61000, 68000, 72842] },
-      { codigoFipe: "003438-0", marca: "Ford", modelo: "EcoSport", versao: "FREESTYLE 1.5 12V Flex 5p Aut.", ano: 2020, valor: 75494, historico: [53000, 59000, 65000, 70000, 75494] },
-      { codigoFipe: "021005-1", marca: "Honda", modelo: "Civic", versao: "LXR 2.0 Flexone 16V Aut.", ano: 2016, valor: 74200, historico: [51000, 56000, 62000, 69000, 74200] },
-      { codigoFipe: "005382-1", marca: "Volkswagen", modelo: "T-Cross", versao: "200 TSI 1.0 Flex Aut.", ano: 2020, valor: 78900, historico: [60000, 65000, 70000, 74000, 78900] },
-      { codigoFipe: "004412-2", marca: "Chevrolet", modelo: "Tracker", versao: "LT 1.4 Turbo Flex Aut.", ano: 2018, valor: 73500, historico: [51000, 57000, 63000, 68000, 73500] }
-    ];
+function formatSyncDateTime(v){
+  if(!v) return '--';
+  const d = v instanceof Date ? v : new Date(v);
+  return isNaN(d) ? '--' : fmtDateTime.format(d);
+}
+function updateSyncIndicator(){
+  const badgeStatus=document.getElementById('badgeSyncStatus');
+  const badgeTime=document.getElementById('badgeSyncTime');
+  if(!badgeStatus||!badgeTime) return;
+  let text='Sincronização: aguardando';
+  badgeStatus.className='badge sync-badge sync-pending';
+  if(state.lastSyncStatus==='ok'){
+    text='Sincronização: OK';
+    badgeStatus.className='badge sync-badge sync-ok';
+  } else if(state.lastSyncStatus==='error'){
+    text='Sincronização: falha';
+    badgeStatus.className='badge sync-badge sync-error';
+  } else if(state.lastSyncStatus==='loading'){
+    text='Sincronização: atualizando';
+    badgeStatus.className='badge sync-badge sync-pending';
+  }
+  badgeStatus.textContent=text;
+  const ref = state.lastSyncSuccess || state.lastRepoCheck || state.lastSyncAttempt;
+  badgeTime.textContent='Última sincronização: '+formatSyncDateTime(ref);
+  badgeTime.title = state.lastSyncError ? ('Último erro: '+state.lastSyncError) : '';
+}
+function setStatus(msg,isErr){const el=document.getElementById('statusBox'); el.style.borderColor=isErr?'#f3b0a8':'#d1d5db'; el.style.background=isErr?'#fff5f4':'#fafafa'; el.innerHTML=msg}
 
-    let myChart = null;
+function saveUiState(){
+  try{
+    localStorage.setItem(UI_STORAGE_KEY, JSON.stringify({filters:state.filters, search:state.search, sort:state.sort}));
+  }catch(err){}
+}
+function loadUiState(){
+  try{
+    const raw = localStorage.getItem(UI_STORAGE_KEY);
+    if(!raw) return;
+    const saved = JSON.parse(raw);
+    if(saved && saved.filters) state.filters = {...DEFAULT_FILTERS, ...saved.filters};
+    if(saved && typeof saved.search === 'string') state.search = saved.search;
+    if(saved && saved.sort && saved.sort.key) state.sort = saved.sort;
+  }catch(err){}
+}
+function syncSearchInput(){
+  const el = document.getElementById('tableSearch');
+  if(el && el.value !== (state.search||'')) el.value = state.search || '';
+}
 
-    // CORREÇÃO ERRO 1: Tenta carregar fipe.xlsx com tratamento de exceção seguro
-    async function carregarPlanilha() {
-      const errorBanner = document.getElementById('errorBanner');
-      try {
-        if (typeof XLSX === 'undefined') throw new Error("Biblioteca SheetJS (XLSX) não foi carregada.");
-        if (typeof Chart === 'undefined') throw new Error("Chart is not defined");
+function arrayBufferToBase64(buffer){let binary=''; const bytes=new Uint8Array(buffer); const chunk=0x8000; for(let i=0;i<bytes.length;i+=chunk){binary += String.fromCharCode.apply(null, bytes.subarray(i,i+chunk))} return btoa(binary)}
+function base64ToArrayBuffer(base64){const binary=atob(base64); const len=binary.length; const bytes=new Uint8Array(len); for(let i=0;i<len;i++) bytes[i]=binary.charCodeAt(i); return bytes.buffer}
+function matchesFilterRow(row, filter){const val=row[idx[filter.key]]; const selected=state.filters[filter.key]; return selected==='Todos' || val===selected}
+function getFilteredRows(){return state.rows.filter(r=>FILTERS.every(f=>matchesFilterRow(r,f)))}
+function getAllowedRowsForFilter(targetKey){return state.rows.filter(r=>FILTERS.every(f=>{if(f.key===targetKey) return true; return matchesFilterRow(r,f)}))}
+function buildFilters(){const box=document.getElementById('filters'); box.innerHTML=''; FILTERS.forEach(f=>{const g=document.createElement('div'); g.className='filter-group'; g.innerHTML='<label>'+f.label+'</label><select id="filter_'+f.key+'"></select>'; box.appendChild(g); document.getElementById('filter_'+f.key).addEventListener('change',e=>{state.filters[f.key]=e.target.value; refreshAll()})}); refreshFilterOptions(); syncSearchInput()}
+function refreshFilterOptions(){FILTERS.forEach(f=>{const allowed=getAllowedRowsForFilter(f.key); const vals=uniq(allowed.map(r=>r[idx[f.key]])).filter(v=>v!=='Todos'); const sel=document.getElementById('filter_'+f.key); const prev=state.filters[f.key]; sel.innerHTML='<option value="Todos">Todos</option>'+vals.map(v=>'<option value="'+esc(v)+'">'+esc(v)+'</option>').join(''); if(['Todos',...vals].includes(prev)){sel.value=prev}else{state.filters[f.key]='Todos'; sel.value='Todos'}})}
+function updateChips(){const chips=[]; FILTERS.forEach(f=>{const val=state.filters[f.key]; if(val!=='Todos'){chips.push('<span class="chip">'+f.label+': '+esc(val)+'</span>')}}); document.getElementById('activeChips').innerHTML=chips.join('')||'<span class="helper">Nenhum filtro ativo</span>'}
+function metrics(rows){const total=rows.reduce((s,r)=>s+num(r[idx.total]),0), quebra=rows.reduce((s,r)=>s+num(r[idx.quebra]),0), checklist=rows.reduce((s,r)=>s+num(r[idx.checklist_n]),0), indicador=total?quebra/total:0, ade=total?checklist/total:0, dates=uniq(rows.map(r=>r[idx.dt_agenda]).filter(Boolean)); return {total,quebra,checklist,indicador,ade,dates}}
+function updateCards(rows){const m=metrics(rows), latest=m.dates.length?parseDate(m.dates[m.dates.length-1]):null, syncRef=state.lastSyncSuccess||state.lastRepoCheck||state.lastSyncAttempt; document.getElementById('cardAtualizacao').textContent=latest?fmtDate.format(latest):'--'; document.getElementById('cardAtualizacaoSub').textContent=state.baseLabel+' • '+fmtInt.format(rows.length)+' registros • Sync '+formatSyncDateTime(syncRef); const ind=document.getElementById('cardIndicador'); ind.textContent=fmtPct.format(m.indicador); ind.className='value '+rateClass(m.indicador); document.getElementById('cardIndicadorSub').innerHTML=rateText(m.indicador)+' • Desvio: <strong>'+deltaText(m.indicador-0.20)+'</strong>'; const chk=document.getElementById('cardChecklist'); chk.textContent=fmtPct.format(m.ade); chk.className='value '+checklistClass(m.ade); document.getElementById('cardChecklistSub').innerHTML=checklistText(m.ade)+' • Gap: <strong>'+deltaText(m.ade-0.80)+'</strong>'; document.getElementById('cardTotal').textContent=fmtInt.format(m.total); document.getElementById('cardQuebra').textContent=fmtInt.format(m.quebra); document.getElementById('badgePeriodo').textContent='Período: '+(m.dates.length?m.dates[0].split('-').reverse().join('/')+' a '+m.dates[m.dates.length-1].split('-').reverse().join('/'): '--'); document.getElementById('badgeAtualizacao').textContent='Atualização: '+(latest?fmtDate.format(latest):'--')}
+function aggregateDaily(rows){const map=new Map(); rows.forEach(r=>{const d=r[idx.dt_agenda]; if(!d) return; if(!map.has(d)) map.set(d,{total:0,quebra:0,checklist:0,canais:new Map()}); const o=map.get(d); o.total+=num(r[idx.total]); o.quebra+=num(r[idx.quebra]); o.checklist+=num(r[idx.checklist_n]); const canal=r[idx.canal_grupo]||'Não identificado'; if(!o.canais.has(canal)) o.canais.set(canal,{total:0,quebra:0,checklist:0}); const c=o.canais.get(canal); c.total+=num(r[idx.total]); c.quebra+=num(r[idx.quebra]); c.checklist+=num(r[idx.checklist_n])}); return Array.from(map.entries()).sort((a,b)=>a[0].localeCompare(b[0])).map(([date,v])=>({date,total:v.total,quebra:v.quebra,checklist:v.checklist,indicador:v.total?v.quebra/v.total:0,ade:v.total?v.checklist/v.total:0,topCanais:Array.from(v.canais.entries()).map(([k,x])=>({canal:k,ind:x.total?x.quebra/x.total:0,ade:x.total?x.checklist/x.total:0,quebra:x.quebra,total:x.total})).sort((a,b)=>b.quebra-a.quebra).slice(0,3)}))}
 
-        const response = await fetch('fipe.xlsx');
-        if (!response.ok) throw new Error("Não foi possível acessar fipe.xlsx na pasta raiz.");
+function renderDaily(rows){const box=document.getElementById('dailyChart'); const data=aggregateDaily(rows); if(!data.length){box.innerHTML='<div class="empty">Sem dados para o gráfico diário no corte selecionado.</div>'; return} const width=980,height=260,pad={l:46,r:24,t:18,b:42}; const maxY=1.0; const plotW=width-pad.l-pad.r, slotW=plotW/Math.max(data.length,1), barW=Math.max(6,Math.min(18,slotW*0.32)); const groupGap=Math.max(2,Math.min(8,slotW*0.08)); const y=v=>height-pad.b-(v/maxY)*(height-pad.t-pad.b); const xCenter=i=>pad.l+slotW*i+slotW/2; const metaQuebraY=y(0.20), metaAdeY=y(0.80); const ticks=[0,.2,.4,.6,.8,1]; const every=data.length>18?Math.ceil(data.length/10):1; let svg='<svg viewBox="0 0 '+width+' '+height+'">'; ticks.forEach(v=>{svg+='<line x1="'+pad.l+'" y1="'+y(v)+'" x2="'+(width-pad.r)+'" y2="'+y(v)+'" stroke="#e5e7eb" stroke-width="1" />'; svg+='<text x="'+(pad.l-7)+'" y="'+(y(v)+4)+'" font-size="10" text-anchor="end" fill="#6b7280">'+(v*100).toFixed(0)+'%</text>'}); svg+='<line x1="'+pad.l+'" y1="'+metaQuebraY+'" x2="'+(width-pad.r)+'" y2="'+metaQuebraY+'" stroke="#9ca3af" stroke-width="1.7" stroke-dasharray="5 5" />'; svg+='<line x1="'+pad.l+'" y1="'+metaAdeY+'" x2="'+(width-pad.r)+'" y2="'+metaAdeY+'" stroke="#9ca3af" stroke-width="1.7" stroke-dasharray="5 5" />'; data.forEach((d,i)=>{const tip=[d.date.split('-').reverse().join('/'),'IND Quebra: '+fmtPct.format(d.indicador),'ADE Checklist: '+fmtPct.format(d.ade),'Quebras: '+fmtInt.format(d.quebra),'Checklist aderente: '+fmtInt.format(d.checklist),'Total: '+fmtInt.format(d.total)]; d.topCanais.forEach(t=>tip.push(t.canal+' • Quebra '+fmtPct.format(t.ind)+' • ADE '+fmtPct.format(t.ade))); const cx=xCenter(i), qX=cx-barW-groupGap/2, aX=cx+groupGap/2, qH=(height-pad.b)-y(d.indicador), aH=(height-pad.b)-y(d.ade); svg+='<rect x="'+qX+'" y="'+y(d.indicador)+'" width="'+barW+'" height="'+Math.max(qH,0)+'" rx="3" fill="var(--claro-red)"><title>'+esc(tip.join(' | '))+'</title></rect>'; svg+='<rect x="'+aX+'" y="'+y(d.ade)+'" width="'+barW+'" height="'+Math.max(aH,0)+'" rx="3" fill="var(--claro-teal)"><title>'+esc(tip.join(' | '))+'</title></rect>'; if(data.length<=20){svg+='<text x="'+(qX+barW/2)+'" y="'+(y(d.indicador)-5)+'" font-size="9" text-anchor="middle" fill="#7f1d1d">'+(d.indicador*100).toFixed(0)+'%</text>'; svg+='<text x="'+(aX+barW/2)+'" y="'+(y(d.ade)-5)+'" font-size="9" text-anchor="middle" fill="#0f5e67">'+(d.ade*100).toFixed(0)+'%</text>'} if(i%every===0||i===data.length-1){svg+='<text x="'+cx+'" y="'+(height-12)+'" font-size="10" text-anchor="middle" fill="#6b7280">'+d.date.slice(8,10)+'</text>'}}); svg+='<text x="'+(width-10)+'" y="'+(metaQuebraY-5)+'" font-size="10" text-anchor="end" fill="#6b7280">Meta quebra 20%</text>'; svg+='<text x="'+(width-10)+'" y="'+(metaAdeY-5)+'" font-size="10" text-anchor="end" fill="#6b7280">Meta checklist 80%</text>'; svg+='</svg>'; box.innerHTML=svg}
+function pareto(rows){const m=new Map(); rows.forEach(r=>{const q=num(r[idx.quebra]); if(!q) return; const key=(r[idx.cod_baixa]||'Sem código')+'|'+(r[idx.dsc_baixa]||'Sem descrição'); m.set(key,(m.get(key)||0)+q)}); return Array.from(m.entries()).map(([k,q])=>{const p=k.split('|'); return {cod:p[0],dsc:p[1],quebra:q}}).sort((a,b)=>b.quebra-a.quebra).slice(0,10)}
+function renderPareto(rows){const el=document.getElementById('paretoChart'), data=pareto(rows); if(!data.length){el.innerHTML='<div class="empty">Sem registros de quebra com código de baixa no corte atual.</div>'; return} const max=Math.max(...data.map(d=>d.quebra),1), total=data.reduce((s,d)=>s+d.quebra,0); el.innerHTML=data.map(d=>{const pct=d.quebra/max*100, share=total?d.quebra/total:0, title=(d.cod||'Sem código')+' - '+(d.dsc||'Sem descrição')+' • '+fmtInt.format(d.quebra)+' quebras • participação '+fmtPct.format(share); return '<div class="bar-row" title="'+esc(title)+'"><div class="bar-label">'+esc(d.cod||'Sem código')+'</div><div class="bar-track"><div class="bar-fill" style="width:'+pct+'%"><span>'+fmtPct.format(share)+'</span></div></div><div class="bar-value">'+fmtInt.format(d.quebra)+'</div></div>'}).join('')}
+function teamAgg(rows){const m=new Map(); rows.forEach(r=>{const canal=r[idx.canal_grupo]||'Não identificado', equipe=r[idx.equipe_venda]||'Não identificado', key=canal+'|'+equipe; if(!m.has(key)) m.set(key,{canal,equipe,total:0,quebra:0,checklist:0,byDate:new Map()}); const o=m.get(key); o.total+=num(r[idx.total]); o.quebra+=num(r[idx.quebra]); o.checklist+=num(r[idx.checklist_n]); const dt=r[idx.dt_agenda]||'Sem data'; if(!o.byDate.has(dt)) o.byDate.set(dt,{total:0,quebra:0,checklist:0}); const b=o.byDate.get(dt); b.total+=num(r[idx.total]); b.quebra+=num(r[idx.quebra]); b.checklist+=num(r[idx.checklist_n])}); return Array.from(m.values()).map(o=>{o.indicador=o.total?o.quebra/o.total:0; o.ade=o.total?o.checklist/o.total:0; o.recovery=Math.max(0,Math.ceil(o.quebra-0.2*o.total)); o.recovery_pct=o.total?o.recovery/o.total:0; o.spark=Array.from(o.byDate.entries()).sort((a,b)=>a[0].localeCompare(b[0])).slice(-6).map(([d,v])=>d.slice(8,10)+':Q'+Math.round((v.total?v.quebra/v.total:0)*100)+'%/A'+Math.round((v.total?v.checklist/v.total:0)*100)+'%').join(' • '); return o})}
+function renderTable(rows){let data=teamAgg(rows); const q=state.search.trim().toLowerCase(); if(q) data=data.filter(d=>(d.canal+' '+d.equipe).toLowerCase().includes(q)); data.sort((a,b)=>{const k=state.sort.key, dir=state.sort.dir==='asc'?1:-1; if(typeof a[k]==='number'&&typeof b[k]==='number') return (a[k]-b[k])*dir; return String(a[k]).localeCompare(String(b[k]),'pt-BR')*dir}); const top=data.slice(0,120); document.getElementById('tableBody').innerHTML=top.map(d=>'<tr title="'+esc('Tendência recente: '+(d.spark||'Sem histórico suficiente')+' • Recuperação da quebra: '+fmtInt.format(d.recovery))+'"><td>'+esc(d.canal)+'</td><td>'+esc(d.equipe)+'</td><td class="align-right">'+fmtInt.format(d.total)+'</td><td class="align-right">'+fmtInt.format(d.quebra)+'</td><td class="align-right">'+fmtInt.format(d.recovery)+'</td><td class="align-right"><span class="pill '+rateClass(d.indicador)+'">'+fmtPct.format(d.indicador)+'</span></td><td class="align-right"><span class="pill '+checklistClass(d.ade)+'">'+fmtPct.format(d.ade)+'</span></td></tr>').join('')||'<tr><td colspan="7" class="empty">Nenhuma linha encontrada.</td></tr>'; document.getElementById('tableInfo').textContent=fmtInt.format(data.length)+' linhas'}
+function rollup(rows, field){const m=new Map(); rows.forEach(r=>{const key=r[idx[field]]||'Não identificado'; if(!m.has(key)) m.set(key,{nome:key,total:0,quebra:0,checklist:0}); const o=m.get(key); o.total+=num(r[idx.total]); o.quebra+=num(r[idx.quebra]); o.checklist+=num(r[idx.checklist_n])}); return Array.from(m.values()).map(o=>({nome:o.nome,total:o.total,quebra:o.quebra,checklist:o.checklist,indicador:o.total?o.quebra/o.total:0,ade:o.total?o.checklist/o.total:0})).sort((a,b)=>(b.quebra-a.quebra)||(a.ade-b.ade))}
+function compare(rows){const d=aggregateDaily(rows); if(!d.length) return null; const latest=d[d.length-1], latestDate=parseDate(latest.date); let prev=null, week=null; for(let i=d.length-2;i>=0;i--){const diff=Math.round((latestDate-parseDate(d[i].date))/(1000*60*60*24)); if(!prev&&diff>=1) prev=d[i]; if(!week&&diff>=7) week=d[i]; if(prev&&week) break} return {latest,prev,week}}
+function renderInsights(rows){const sum=document.getElementById('summaryBox'), list=document.getElementById('prList'); const m=metrics(rows); if(!m.total){sum.innerHTML='Sem dados para gerar análise crítica no recorte atual.'; list.innerHTML=''; return} const cmp=compare(rows), deltaPrev=cmp&&cmp.prev?(cmp.latest.indicador-cmp.prev.indicador):null, deltaWeek=cmp&&cmp.week?(cmp.latest.indicador-cmp.week.indicador):null, deltaAdePrev=cmp&&cmp.prev?(cmp.latest.ade-cmp.prev.ade):null, deltaAdeWeek=cmp&&cmp.week?(cmp.latest.ade-cmp.week.ade):null; const teams=teamAgg(rows).filter(x=>x.total>0); const below80=teams.filter(x=>x.ade<0.8), at80=teams.filter(x=>x.ade>=0.8); const weighted=(arr,field)=>{const t=arr.reduce((s,x)=>s+x.total,0); return t?arr.reduce((s,x)=>s+x[field]*x.total,0)/t:0}; const quebraLowAde=weighted(below80,'indicador'), quebraHighAde=weighted(at80,'indicador'); const offenders=teams.sort((a,b)=>(b.quebra-a.quebra)||(a.ade-b.ade)).slice(0,10); const badChecklist=teams.filter(x=>x.ade<0.8).sort((a,b)=>(a.ade-b.ade)||(b.quebra-a.quebra)).slice(0,5); const causes=pareto(rows).slice(0,3); const groups=rollup(rows,'grupo_canais').slice(0,4); const cities=rollup(rows,'cidade').slice(0,3); sum.innerHTML='O recorte atual soma <strong>'+fmtInt.format(m.total)+'</strong> agendas, <strong>'+fmtInt.format(m.quebra)+'</strong> quebras e <strong>'+fmtInt.format(m.checklist)+'</strong> confirmações aderentes ao checklist. O indicador de quebra está em <strong class="color-'+rateClass(m.indicador)+'">'+fmtPct.format(m.indicador)+'</strong> e a aderência checklist em <strong class="color-'+checklistClass(m.ade)+'">'+fmtPct.format(m.ade)+'</strong>. '+(deltaPrev==null?'Sem base suficiente para comparação diária.':'Vs. dia anterior: quebra <strong>'+deltaText(deltaPrev)+'</strong> e checklist <strong>'+deltaText(deltaAdePrev)+'</strong>. ')+' '+(deltaWeek==null?'Sem base suficiente para comparação semanal.':'Vs. semana anterior: quebra <strong>'+deltaText(deltaWeek)+'</strong> e checklist <strong>'+deltaText(deltaAdeWeek)+'</strong>.'); const bullets=[]; if(at80.length&&below80.length){bullets.push('Quando a aderência ao checklist fica <strong>abaixo de 80%</strong>, a quebra média ponderada é de <strong>'+fmtPct.format(quebraLowAde)+'</strong>. Nos grupos/equipes com checklist <strong>em 80% ou mais</strong>, a quebra média cai para <strong>'+fmtPct.format(quebraHighAde)+'</strong>. Isso reforça a relação operacional esperada: <strong>mais aderência tende a reduzir quebra</strong>.')} if(badChecklist.length){bullets.push('Piores aderências do checklist no recorte: '+badChecklist.map((o,i)=>'<strong>#'+(i+1)+'</strong> '+esc(o.equipe)+' • '+esc(o.canal)+' — ADE '+fmtPct.format(o.ade)+' | quebra '+fmtPct.format(o.indicador)+' | '+fmtInt.format(o.quebra)+' quebras').join(' • ')+'.')} if(offenders.length){const o=offenders[0]; bullets.push('Maior ofensor combinado (quebra alta + aderência sensível): <strong>'+esc(o.equipe)+'</strong> no canal <strong>'+esc(o.canal)+'</strong>, com <strong>'+fmtInt.format(o.quebra)+'</strong> quebras, IND <strong>'+fmtPct.format(o.indicador)+'</strong> e ADE <strong>'+fmtPct.format(o.ade)+'</strong>.')} if(causes.length){bullets.push('Causas raiz líderes no corte atual: '+causes.map(c=>'<strong>'+esc(c.cod||'Sem código')+'</strong> ('+fmtInt.format(c.quebra)+' quebras)').join(', ')+'.')} if(groups.length){bullets.push('Por grupo de canais, as maiores pressões concentram-se em '+groups.map(g=>'<strong>'+esc(g.nome)+'</strong> — quebra '+fmtPct.format(g.indicador)+' | ADE '+fmtPct.format(g.ade)).join(', ')+'.')} if(cities.length){bullets.push('Geografias prioritárias: '+cities.map(c=>'<strong>'+esc(c.nome)+'</strong> ('+fmtInt.format(c.quebra)+' quebras | ADE '+fmtPct.format(c.ade)+')').join(', ')+'.')} bullets.push('A recomendação executiva é elevar a confirmação ativa dos agendamentos nas equipes abaixo da meta de 80%, começando pelos maiores volumes e pelos canais com combinação de <strong>baixa ADE + alta quebra</strong>.'); list.innerHTML=bullets.map(b=>'<li>'+b+'</li>').join('')}
 
-        const arrayBuffer = await response.arrayBuffer();
-        const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-        const parsedData = XLSX.utils.sheet_to_json(firstSheet);
+function cityAgg(rows){const m=new Map(); rows.forEach(r=>{const cidade=r[idx.cidade]||'Não identificado', uf=r[idx.uf]||'', key=cidade+'|'+uf; if(!m.has(key)) m.set(key,{cidade,uf,total:0,quebra:0,checklist:0}); const o=m.get(key); o.total+=num(r[idx.total]); o.quebra+=num(r[idx.quebra]); o.checklist+=num(r[idx.checklist_n])}); return Array.from(m.values()).map(o=>({...o,indicador:o.total?o.quebra/o.total:0,ade:o.total?o.checklist/o.total:0,recovery:Math.max(0,Math.ceil(o.quebra-0.2*o.total))})).sort((a,b)=>(b.recovery-a.recovery)||(b.quebra-a.quebra)||(b.indicador-a.indicador)||(String(a.cidade).localeCompare(String(b.cidade),'pt-BR')))}
+function renderFocus(rows){const el=document.getElementById('focusBox'); const data=cityAgg(rows).slice(0,12); if(!data.length){el.innerHTML='<div class="empty">Sem dados para o ranking das cidades no corte atual.</div>'; return} const totalRecovery=data.reduce((s,x)=>s+x.recovery,0), critical=data.filter(x=>x.recovery>0).length; el.innerHTML='<div style="border:1px solid #ffd9d3;background:#fff8f7;border-radius:12px;padding:10px;margin-bottom:10px"><div class="section-title" style="margin-top:0">Resumo do ranking</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div><div style="font-size:18px;font-weight:800;color:var(--claro-red)">'+fmtInt.format(totalRecovery)+'</div><div class="helper">Recuperação total das 12 cidades mais ofensoras.</div></div><div><div style="font-size:18px;font-weight:800;color:var(--claro-teal)">'+fmtInt.format(critical)+'</div><div class="helper">Cidades no ranking com necessidade de recuperação acima de zero.</div></div></div></div><div class="table-wrap" style="flex:1;min-height:0;max-height:none"><table><thead><tr><th>#</th><th>Cidade</th><th>UF</th><th class="align-right">Quebras</th><th class="align-right">Recuperação</th><th class="align-right">IND Quebra</th><th class="align-right">ADE Checklist</th></tr></thead><tbody>'+data.map((d,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(d.cidade)+'</td><td>'+esc(d.uf||'--')+'</td><td class="align-right">'+fmtInt.format(d.quebra)+'</td><td class="align-right">'+fmtInt.format(d.recovery)+'</td><td class="align-right"><span class="pill '+rateClass(d.indicador)+'">'+fmtPct.format(d.indicador)+'</span></td><td class="align-right"><span class="pill '+checklistClass(d.ade)+'">'+fmtPct.format(d.ade)+'</span></td></tr>').join('')+'</tbody></table></div><div class="footnote">Ranking ordenado pela recuperação da quebra em ordem decrescente; em caso de empate, prevalecem maior volume de quebras e maior indicador.</div>'}
 
-        if (parsedData && parsedData.length > 0) {
-          // Atualiza base com a planilha se encontrada
-          baseDados = parsedData;
-        }
-        errorBanner.style.display = 'none';
-      } catch (err) {
-        // Exibe erro na tela mas mantém a aplicação legível usando dados de fallback
-        errorBanner.style.display = 'block';
-        errorBanner.innerHTML = `<strong>Atenção:</strong> Não foi possível carregar fipe.xlsx. Detalhe: ${err.message}`;
-      } finally {
-        inicializarApp();
+function refreshAll(){refreshFilterOptions(); updateChips(); syncSearchInput(); const rows=getFilteredRows(); updateCards(rows); renderDaily(rows); renderPareto(rows); renderTable(rows); renderFocus(rows); renderInsights(rows); saveUiState()}
+function normalizeHeader(h){return String(h??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toUpperCase().replace(/\s+/g,'_')}
+function findSheetName(names,target){const t=normalizeHeader(target); return names.find(n=>normalizeHeader(n)===t) || names.find(n=>normalizeHeader(n).includes(t))}
+function safeStr(v,fallback='Não identificado'){if(v==null||v===''||String(v).toLowerCase()==='nan') return fallback; return String(v).trim()}
+function firstOf(row,names){for(const n of names){if(row[n]!==undefined) return row[n]} return null}
+function excelDateToISO(value){if(value==null||value==='') return ''; if(value instanceof Date && !isNaN(value)) return value.toISOString().slice(0,10); if(typeof value==='number'){const utc_days=Math.floor(value-25569); const utc_value=utc_days*86400; return new Date(utc_value*1000).toISOString().slice(0,10)} const text=String(value).trim(); const d1=new Date(text); if(!isNaN(d1)) return d1.toISOString().slice(0,10); const m=text.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{2,4})$/); if(m){const day=m[1].padStart(2,'0'), mon=m[2].padStart(2,'0'), year=m[3].length===2?'20'+m[3]:m[3]; return year+'-'+mon+'-'+day} return ''}
+function mapGrupoCanais(canal){const s=String(canal||'').trim(); if(s==='Agente Autorizado') return 'AA'; if(['Porta Porta Exclusivo','Porta Porta Indireto'].includes(s)) return 'PAP'; if(s==='Lojas Proprias') return 'Lojas'; if(['Ativo','Canais Eletronicos','DAC','Receptivo'].includes(s)) return 'Remotos'; if(s==='Varejo') return 'Varejo'; if(s==='Canais Exclusivo Empresas') return 'PME'; return 'Outros'}
+function workbookToRows(workbook){const names=workbook.SheetNames; const citySheet=findSheetName(names,'CIDADES'), contractSheet=findSheetName(names,'CONTRATOS'), breakSheet=findSheetName(names,'QUEBRA'); if(!citySheet||!contractSheet||!breakSheet) throw new Error('Não foi possível localizar as abas CIDADES, CONTRATOS e QUEBRA.'); const cityRaw=XLSX.utils.sheet_to_json(workbook.Sheets[citySheet],{defval:null,raw:false}), contractRaw=XLSX.utils.sheet_to_json(workbook.Sheets[contractSheet],{defval:null,raw:false}), breakRaw=XLSX.utils.sheet_to_json(workbook.Sheets[breakSheet],{defval:null,raw:false}); const cityRows=cityRaw.map(r=>Object.fromEntries(Object.entries(r).map(([k,v])=>[normalizeHeader(k),v]))), contractRows=contractRaw.map(r=>Object.fromEntries(Object.entries(r).map(([k,v])=>[normalizeHeader(k),v]))), breakRows=breakRaw.map(r=>Object.fromEntries(Object.entries(r).map(([k,v])=>[normalizeHeader(k),v]))); const cityMap=new Map(); cityRows.forEach(r=>{const ibge=safeStr(firstOf(r,['CD_IBGE']), ''); if(!ibge) return; cityMap.set(ibge,{grupo:safeStr(firstOf(r,['NM_GRUPO'])),uf:safeStr(firstOf(r,['UF'])),cluster:safeStr(firstOf(r,['NM_CLUSTER'])),cidade:safeStr(firstOf(r,['NM_CIDADE'])),segmento:safeStr(firstOf(r,['NM_SEGMENTO_MUNICIPIO']))})}); const contractMap=new Map(); contractRows.forEach(r=>{const nr=safeStr(firstOf(r,['NR_SOLICITACAO']), ''), ibge=safeStr(firstOf(r,['COD_MUNICIPIO','CD_IBGE']), ''); if(!nr||!ibge) return; const key=nr+'|'+ibge; if(!contractMap.has(key)) contractMap.set(key,{equipe:safeStr(firstOf(r,['NM_EQUIPE_VENDA'])),canal_subgrupo:safeStr(firstOf(r,['NM_CANAL_VENDA_SUBGRUPO'])),canal_grupo:safeStr(firstOf(r,['NM_CANAL_VENDA_GRUPO']))})}); return breakRows.map(r=>{const nr=safeStr(firstOf(r,['NR_SOLICITACAO']), ''), ibge=safeStr(firstOf(r,['CD_IBGE','COD_MUNICIPIO']), ''), key=nr+'|'+ibge, city=cityMap.get(ibge)||{grupo:'Não identificado',uf:'Não identificado',cluster:'Não identificado',cidade:'Não identificado',segmento:'Não identificado'}, ctr=contractMap.get(key)||{equipe:'Não identificado',canal_subgrupo:'Não identificado',canal_grupo:'Não identificado'}, dt=excelDateToISO(firstOf(r,['DT_AGENDA','DT'])); const novo=safeStr(firstOf(r,['NM_NOVO_DOMICILIO'])); const novoNorm=(novo.toLowerCase()==='sim'?'Sim':(novo.toLowerCase()==='não'||novo.toLowerCase()==='nao'?'Não':novo)); const canalGrupo=ctr.canal_grupo; return [dt, dt?dt.slice(0,7):'Sem data', ibge, city.grupo, city.uf, city.cluster, city.cidade, city.segmento, safeStr(firstOf(r,['GRUPO_OS'])), safeStr(firstOf(r,['TIPO_OS'])), novoNorm, mapGrupoCanais(canalGrupo), safeStr(firstOf(r,['COD_BAIXA']), '')==='Não identificado'?'':safeStr(firstOf(r,['COD_BAIXA']), ''), safeStr(firstOf(r,['DSC_BAIXA']), '')==='Não identificado'?'':safeStr(firstOf(r,['DSC_BAIXA']), ''), num(firstOf(r,['QUEBRA'])), num(firstOf(r,['TOTAL'])), num(firstOf(r,['N'])), canalGrupo, ctr.canal_subgrupo, ctr.equipe]})}
+function replaceBetween(src,start,end,content){const i=src.indexOf(start), j=src.indexOf(end); if(i===-1||j===-1||j<i) return src; return src.slice(0,i+start.length)+content+src.slice(j)}
+function saveHtml(){try{let html=document.documentElement.outerHTML; html=replaceBetween(html,'/*__EMBEDDED_FIELDS_START__*/','/*__EMBEDDED_FIELDS_END__*/','const EMBEDDED_FIELDS = '+JSON.stringify(EMBEDDED_FIELDS)+';'); html=replaceBetween(html,'/*__EMBEDDED_ROWS_START__*/','/*__EMBEDDED_ROWS_END__*/','const EMBEDDED_ROWS = '+JSON.stringify(state.rows)+';'); const latestRows=state.rows; const dts=latestRows.map(r=>r[idx.dt_agenda]).filter(Boolean).sort(); const meta={...EMBEDDED_META,generated_at:new Date().toISOString().slice(0,19).replace('T',' '),max_dt_agenda:dts.length?dts[dts.length-1]:'',rows_merged:latestRows.length,source_label:state.baseLabel}; html=replaceBetween(html,'/*__EMBEDDED_META_START__*/','/*__EMBEDDED_META_END__*/','const EMBEDDED_META = '+JSON.stringify(meta)+';'); html=replaceBetween(html,'/*__EMBEDDED_XLSX_START__*/','/*__EMBEDDED_XLSX_END__*/','const EMBEDDED_XLSX_BASE64 = '+JSON.stringify(state.rawWorkbookBase64)+';'); const blob=new Blob([html],{type:'text/html;charset=utf-8'}); const fileName='Dashboard_Analytics_v3.html'; if('showSaveFilePicker' in window){window.showSaveFilePicker({suggestedName:fileName,types:[{description:'Arquivo HTML',accept:{'text/html':['.html']}}]}).then(async handle=>{const writable=await handle.createWritable(); await writable.write(blob); await writable.close(); setStatus('HTML atualizado salvo com sucesso.',false)}).catch(err=>{if(err&&err.name!=='AbortError') setStatus('Falha ao salvar HTML: '+esc(err.message),true)})} else {const url=URL.createObjectURL(blob), a=document.createElement('a'); a.href=url; a.download=fileName; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1000); setStatus('Download do HTML atualizado iniciado.',false)}} catch(err){setStatus('Erro ao montar HTML: '+esc(err.message),true)}}
+async function exportPng(){try{if(typeof html2canvas==='undefined') throw new Error('Biblioteca html2canvas indisponível.'); const target=document.getElementById('dashboardRoot'); const canvas=await html2canvas(target,{backgroundColor:'#f5f6f8',scale:2,useCORS:true,logging:false,windowWidth:document.documentElement.scrollWidth,windowHeight:document.documentElement.scrollHeight}); const grupo=state.filters.grupo_canais && state.filters.grupo_canais!=='Todos' ? String(state.filters.grupo_canais).replace(/[^A-Za-z0-9_-]/g,'_') : ''; const fileName=grupo ? 'Dashboard_Quebra_Agenda_v3_'+grupo+'.png' : 'Dashboard_Quebra_Agenda_v3.png'; const url=canvas.toDataURL('image/png'); const a=document.createElement('a'); a.href=url; a.download=fileName; a.click(); setStatus('Exportação PNG concluída com sucesso. Arquivo: <strong>'+esc(fileName)+'</strong>.',false)} catch(err){setStatus('Não foi possível exportar o PNG: '+esc(err.message)+'. Se estiver totalmente offline, verifique se a biblioteca html2canvas foi carregada.',true)}}
+
+function replaceFile(buffer,fileName,options={}){
+  if(typeof XLSX==='undefined') throw new Error('A biblioteca XLSX não está disponível no navegador.');
+  const wb=XLSX.read(buffer,{type:'array',cellDates:true});
+  const rows=workbookToRows(wb);
+  if(!rows.length) throw new Error('A nova planilha não gerou linhas válidas para o dashboard.');
+  state.rows=rows;
+  state.rawWorkbookBase64=arrayBufferToBase64(buffer);
+  state.baseLabel=options.baseLabel || ('Base substituída: '+fileName);
+  buildFilters();
+  syncSearchInput();
+  refreshAll();
+  if(options.keepStatus!==false){
+    const msg = options.statusMessage || ('Nova base <strong>'+esc(fileName)+'</strong> carregada com sucesso.');
+    setStatus(msg,false);
+  }
+}
+
+async function fetchWithTimeout(url, options={}, timeoutMs=REPO_FETCH_TIMEOUT_MS){
+  const controller = new AbortController();
+  const timer = setTimeout(()=>controller.abort(), timeoutMs);
+  try{
+    const response = await fetch(url,{...options,signal:controller.signal});
+    return response;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function loadRepoWorkbook(options={}){
+  const opts = {showStatus:true, forceMessage:false, ...options};
+  const bust = Date.now();
+  const url = REPO_EXCEL_PATH + '?v=' + bust;
+  state.lastSyncAttempt = new Date().toISOString();
+  state.lastSyncStatus = 'loading';
+  updateSyncIndicator();
+  try{
+    if(opts.showStatus){
+      setStatus('Lendo automaticamente o arquivo <strong>'+esc(REPO_EXCEL_PATH)+'</strong> publicado no repositório...', false);
+    }
+    const response = await fetchWithTimeout(url, {
+      cache:'no-store',
+      headers:{'Cache-Control':'no-cache, no-store, must-revalidate','Pragma':'no-cache','Expires':'0'}
+    });
+    if(!response.ok) throw new Error('HTTP '+response.status+' ao obter a planilha do repositório.');
+    const buffer = await response.arrayBuffer();
+    const hash = String(buffer.byteLength)+':'+String(new Uint8Array(buffer).slice(0,32));
+    const changed = hash !== state.lastLoadedHash;
+    state.lastLoadedHash = hash;
+    state.lastRepoCheck = new Date().toISOString();
+    state.lastSyncSuccess = state.lastRepoCheck;
+    state.lastSyncStatus = 'ok';
+    state.lastSyncError = '';
+    replaceFile(buffer, 'IND_QUEBRA.xlsx', {
+      baseLabel:'Arquivo do repositório GitHub',
+      keepStatus:false
+    });
+    updateSyncIndicator();
+    if(opts.showStatus || opts.forceMessage || changed){
+      setStatus('Base atualizada a partir de <strong>'+esc(REPO_EXCEL_PATH)+'</strong>. Sempre que você substituir o arquivo Excel no repositório, use <strong>F5</strong> ou clique em <strong>Atualizar do repositório</strong> para recarregar a versão mais recente.', false);
+    }
+    return true;
+  } catch(err){
+    const detail = err && err.name==='AbortError' ? 'Tempo limite excedido ao buscar a planilha.' : (err && err.message ? err.message : String(err));
+    state.lastSyncStatus = 'error';
+    state.lastSyncError = detail;
+    updateSyncIndicator();
+    if(state.rows && state.rows.length){
+      if(opts.showStatus || opts.forceMessage){
+        setStatus('Não foi possível atualizar do repositório agora: <strong>'+esc(detail)+'</strong>. O painel continuará exibindo a última base carregada nesta sessão.', true);
       }
+    } else {
+      setStatus('Falha ao carregar a planilha <strong>'+esc(REPO_EXCEL_PATH)+'</strong> diretamente do repositório: <strong>'+esc(detail)+'</strong>.<br><span class="helper">Confirme se o arquivo <strong>IND_QUEBRA.xlsx</strong> está publicado na mesma pasta do <strong>index.html</strong> no GitHub Pages.</span>', true);
     }
+    return false;
+  }
+}
 
-    function inicializarApp() {
-      renderizarListaVersoes();
-      selecionarVeiculo(baseDados[0]);
-    }
 
-    function renderizarListaVersoes() {
-      const container = document.getElementById('versionsList');
-      container.innerHTML = '';
+document.getElementById('btnClearFilters').addEventListener('click',()=>{Object.assign(state.filters, DEFAULT_FILTERS); state.search=''; state.sort={key:'recovery',dir:'desc'}; buildFilters(); refreshAll()});
+document.getElementById('btnReloadEmbedded').addEventListener('click',()=>{loadRepoWorkbook({showStatus:true,forceMessage:true})});
+document.getElementById('btnSaveHtml').addEventListener('click',saveHtml);
+document.getElementById('btnExportPng').addEventListener('click',exportPng);
+document.getElementById('tableSearch').addEventListener('input',e=>{state.search=e.target.value||''; renderTable(getFilteredRows()); saveUiState()});
+document.querySelectorAll('th[data-sort]').forEach(th=>th.addEventListener('click',()=>{const keyMap={canal:'canal',equipe:'equipe',total:'total',quebra:'quebra',recovery:'recovery',indicador:'indicador',ade:'ade'}, key=keyMap[th.dataset.sort]; if(state.sort.key===key) state.sort.dir=state.sort.dir==='asc'?'desc':'asc'; else state.sort={key,dir:(key==='canal'||key==='equipe')?'asc':'desc'}; renderTable(getFilteredRows()); saveUiState()}));
 
-      baseDados.forEach(carro => {
-        const item = document.createElement('div');
-        item.className = 'version-item';
-        item.innerHTML = `<strong>${carro.versao}</strong><br><small>${carro.ano} · R$ ${carro.valor.toLocaleString('pt-BR')}</small>`;
-        item.onclick = () => selecionarVeiculo(carro);
-        container.appendChild(item);
-      });
-    }
+async function initDashboard(){
+  loadUiState();
+  buildFilters();
+  syncSearchInput();
+  refreshAll();
+  updateSyncIndicator();
+  setStatus('Carregando o arquivo <strong>'+esc(REPO_EXCEL_PATH)+'</strong> ao abrir a página...', false);
+  await loadRepoWorkbook({showStatus:true,forceMessage:true});
+}
 
-    function selecionarVeiculo(veiculo) {
-      document.getElementById('fipeCode').innerText = `CÓDIGO FIPE ${veiculo.codigoFipe}`;
-      document.getElementById('vehicleTitle').innerText = `${veiculo.modelo} — ${veiculo.versao}`;
-      document.getElementById('vehicleSubtitle').innerText = `Carro · ${veiculo.marca}`;
-      document.getElementById('vehiclePrice').innerText = `R$ ${veiculo.valor.toLocaleString('pt-BR')}`;
-
-      // CORREÇÃO ERRO 3: Renderiza o gráfico via Chart.js
-      renderizarGrafico(veiculo.historico || [50000, 55000, 60000, 70000, veiculo.valor]);
-
-      // CORREÇÃO ERRO 4: Calcula e renderiza os veículos semelhantes
-      renderizarVeiculosSemelhantes(veiculo);
-    }
-
-    // CORREÇÃO ERRO 3: Criação/Atualização do Chart.js
-    function renderizarGrafico(dadosHistorico) {
-      const ctx = document.getElementById('chartDepreciacao').getContext('2d');
-
-      if (myChart) {
-        myChart.destroy(); // Destrói instância anterior para evitar erros de renderização
-      }
-
-      myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: ['2020', '2021', '2022', '2023', '2024'],
-          datasets: [{
-            label: 'Evolução do Preço (R$)',
-            data: dadosHistorico,
-            borderColor: '#00bcd4',
-            backgroundColor: 'rgba(0, 188, 212, 0.1)',
-            fill: true,
-            tension: 0.3
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: {
-            x: { grid: { color: '#232d39' }, ticks: { color: '#9ca3af' } },
-            y: { grid: { color: '#232d39' }, ticks: { color: '#9ca3af' } }
-          }
-        }
-      });
-    }
-
-    // CORREÇÃO ERRO 4: Filtra veículos na faixa de preço ±10%
-    function renderizarVeiculosSemelhantes(veiculoAtual) {
-      const container = document.getElementById('similaresContainer');
-      container.innerHTML = '';
-
-      const min = veiculoAtual.valor * 0.85; // Margem de -15%
-      const max = veiculoAtual.valor * 1.15; // Margem de +15%
-
-      const semelhantes = baseDados.filter(c => 
-        c.codigoFipe !== veiculoAtual.codigoFipe && 
-        c.valor >= min && 
-        c.valor <= max
-      );
-
-      if (semelhantes.length === 0) {
-        container.innerHTML = '<small style="color: var(--text-muted)">Nenhum veículo similar encontrado na mesma faixa de preço.</small>';
-        return;
-      }
-
-      semelhantes.slice(0, 4).forEach(v => {
-        const card = document.createElement('div');
-        card.className = 'similar-item';
-        card.style.cursor = 'pointer';
-        card.innerHTML = `
-          <div class="name">${v.marca} ${v.modelo}</div>
-          <div class="price">R$ ${v.valor.toLocaleString('pt-BR')} · ${v.ano}</div>
-        `;
-        card.onclick = () => selecionarVeiculo(v);
-        container.appendChild(card);
-      });
-    }
-
-    window.onload = carregarPlanilha;
-  </script>
+initDashboard();
+</script>
 </body>
 </html>
