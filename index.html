@@ -6,232 +6,294 @@
   <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="pragma" content="no-cache">
   <meta http-equiv="expires" content="0">
-  <title>Tabela FIPE — Consulta e Histórico</title>
+  <title>Tabela FIPE</title>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     :root {
-      --claro-red: #DA291C;
-      --claro-red-dark: #AF272F;
-      --claro-teal: #0097A9;
-      --claro-gray: #A7A8AA;
-      --bg: #f5f6f8;
-      --card: #fff;
-      --line: #e2e6ea;
-      --good: #22863a;
-      --warn: #b88200;
-      --bad: #cf222e;
-      --muted: #6b7280;
-      --ink: #2D291C;
+      --bg: #0f1419;
+      --card: #1a1f27;
+      --border: #2a3142;
+      --accent: #00bcd4;
+      --accent-dark: #0097a9;
+      --text: #e8eef5;
+      --text-muted: #9ca3af;
+      --danger: #ef4444;
+      --good: #10b981;
     }
     * { box-sizing: border-box; }
-    body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--ink); }
+    html, body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: var(--bg); color: var(--text); }
+    
     .topbar {
-      background: linear-gradient(90deg, var(--claro-red), var(--claro-red-dark));
-      color: #fff;
-      padding: 9px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
       position: sticky;
       top: 0;
-      z-index: 10;
-      box-shadow: 0 2px 8px rgba(0,0,0,.12);
+      z-index: 100;
     }
-    .topbar h1 { margin: 0; font-size: 22px; }
-    .subtitle { font-size: 11px; opacity: .94; margin-top: 2px; }
-    .topbar-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
-    .badge {
-      background: rgba(255,255,255,.16);
-      border: 1px solid rgba(255,255,255,.22);
-      padding: 7px 10px;
-      border-radius: 999px;
-      font-size: 11px;
-    }
-    .badge.sync-badge { font-weight: 700; }
-    .sync-pending { background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.22); color: #fff; }
-    .sync-ok { background: rgba(34,134,58,.18); border-color: rgba(255,255,255,.32); color: #fff; }
-    .sync-error { background: rgba(207,34,46,.22); border-color: rgba(255,255,255,.34); color: #fff; }
+    .topbar h1 { margin: 0; font-size: 18px; letter-spacing: 0.05em; }
+    
     #errorBanner {
       display: none;
-      background: rgba(207,34,46,.22);
-      border: 1px solid rgba(207,34,46,.34);
-      color: #fff;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid var(--danger);
+      color: #fca5a5;
       padding: 10px 14px;
       margin: 0;
       font-size: 12px;
       position: sticky;
-      top: 66px;
-      z-index: 9;
+      top: 50px;
+      z-index: 99;
     }
-    .btn {
-      border: none;
-      padding: 8px 10px;
-      background: #fff;
-      color: var(--claro-red);
-      border-radius: 10px;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 1px 2px rgba(0,0,0,.08);
-      font-size: 12px;
-    }
-    .btn.secondary {
-      background: rgba(255,255,255,.12);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,.25);
-    }
-    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-    .wrap { display: grid; grid-template-columns: 290px 1fr; gap: 10px; padding: 10px; min-height: calc(100vh - 66px); }
-    .sidebar, .panel, .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; }
-    .sidebar { padding: 10px; overflow: auto; max-height: calc(100vh - 90px); }
-    .panel { padding: 10px; }
-    .main { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
-    .section-title { font-size: 11px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); font-weight: 700; margin: 0 0 6px; }
-    .filters { display: grid; gap: 7px; }
-    .filter-group label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 3px; color: #374151; }
-    .filter-group select, .filter-group input, .table-toolbar input {
+    
+    .wrap { display: grid; grid-template-columns: 320px 1fr; gap: 12px; padding: 12px; min-height: calc(100vh - 70px); }
+    .sidebar { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; overflow-y: auto; max-height: calc(100vh - 90px); }
+    .main { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+    
+    .section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 700; margin: 12px 0 8px; }
+    .section-title:first-child { margin-top: 0; }
+    
+    /* Dropdowns */
+    .dropdown-wrapper { position: relative; margin-bottom: 8px; }
+    .dropdown-label { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: var(--border); border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--text); user-select: none; transition: background 0.15s; }
+    .dropdown-label:hover { background: #3a4555; }
+    .dropdown-label.active { color: var(--accent); }
+    .dropdown-icon { font-size: 10px; transition: transform 0.2s; }
+    .dropdown-label.active .dropdown-icon { transform: rotate(180deg); }
+    .dropdown-menu { display: none; position: absolute; top: calc(100% + 2px); left: 0; right: 0; background: var(--card); border: 1px solid var(--border); border-radius: 8px; z-index: 50; max-height: 200px; overflow-y: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+    .dropdown-menu.open { display: block; }
+    .dropdown-item { padding: 8px 10px; font-size: 12px; cursor: pointer; border-bottom: 1px solid var(--border); transition: background 0.1s; color: var(--text-muted); }
+    .dropdown-item:last-child { border-bottom: none; }
+    .dropdown-item:hover { background: var(--border); color: var(--text); }
+    .dropdown-item.active { background: rgba(0, 188, 212, 0.15); color: var(--accent); font-weight: 600; }
+    .dropdown-item.empty { text-align: center; color: var(--text-muted); padding: 12px; pointer-events: none; }
+    
+    /* Slider */
+    .slider-wrapper { margin-bottom: 8px; }
+    .slider-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 700; margin-bottom: 6px; display: block; }
+    .slider-values { display: flex; justify-content: space-between; font-size: 11px; color: var(--accent); margin-bottom: 4px; }
+    input[type="range"] {
       width: 100%;
-      padding: 7px 9px;
-      border: 1px solid #d1d5db;
-      border-radius: 10px;
-      background: #fff;
-      color: #111827;
-      font-size: 12px;
+      height: 5px;
+      border-radius: 3px;
+      background: var(--border);
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
     }
-    .filter-group input:focus, .filter-group select:focus { outline: 2px solid var(--claro-teal); outline-offset: -1px; }
-    .chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; min-height: 24px; }
-    .chip { background: #fff5f4; color: var(--claro-red-dark); border: 1px solid #ffd2cd; padding: 3px 7px; border-radius: 999px; font-size: 10px; }
-    .small-note { font-size: 10px; color: var(--muted); line-height: 1.3; }
-    .status-box { margin-top: 10px; border: 1px dashed #d1d5db; border-radius: 12px; padding: 8px; font-size: 11px; color: #374151; background: #fafafa; }
-    .cards { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 10px; }
-    .card { padding: 10px; min-height: 78px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 1px 1px rgba(0,0,0,.02); }
-    .card .label { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 700; }
-    .card .value { font-size: 24px; font-weight: 800; line-height: 1.02; margin-top: 6px; font-family: 'Courier New', monospace; }
-    .card .sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
-    .good { color: var(--good); }
-    .warn { color: var(--warn); }
-    .bad { color: var(--bad); }
-    .grid-2 { display: grid; grid-template-columns: 1fr 280px; gap: 10px; min-width: 0; }
-    .grid-2 > .panel:first-child { display: flex; flex-direction: column; }
-    .grid-2 > .panel:first-child .chart-container { flex: 1; min-height: 340px; position: relative; }
-    .head-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 7px; }
-    .legend { display: flex; gap: 10px; flex-wrap: wrap; font-size: 11px; color: var(--muted); }
-    .legend-item { display: flex; align-items: center; gap: 5px; }
-    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-    .kicker { color: var(--muted); font-size: 11px; margin-bottom: 8px; }
-    .side-section { margin-bottom: 12px; }
-    .side-section h4 { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 700; margin: 0 0 6px; }
-    .similar-item {
-      padding: 8px;
-      background: #fafafa;
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      margin-bottom: 6px;
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
       cursor: pointer;
-      transition: all 0.15s;
+      transition: background 0.1s;
     }
-    .similar-item:hover { background: #fff; border-color: var(--claro-teal); }
-    .similar-name { font-size: 12px; font-weight: 700; color: #111827; }
-    .similar-price { font-size: 11px; color: var(--claro-teal); margin-top: 2px; font-weight: 600; }
-    .similar-diff { font-size: 10px; color: var(--muted); margin-top: 1px; }
-    .empty { color: var(--muted); font-size: 12px; padding: 12px; text-align: center; }
-    table { width: 100%; border-collapse: collapse; font-size: 11px; background: #fff; }
-    thead th { background: #fff8f7; border-bottom: 1px solid #e5e7eb; color: #7c2d12; text-align: left; padding: 7px; font-weight: 700; }
-    tbody td { border-bottom: 1px solid #f0f2f4; padding: 5px 7px; line-height: 1.15; }
-    tbody tr:hover { background: #fffaf9; }
-    .align-right { text-align: right; }
-    @media (max-width: 1400px) {
-      .cards { grid-template-columns: repeat(3, minmax(0,1fr)); }
+    input[type="range"]::-webkit-slider-thumb:hover { background: var(--accent-dark); }
+    input[type="range"]::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      border: none;
+    }
+    
+    /* Status */
+    .status-box { margin-top: 12px; border: 1px dashed var(--border); border-radius: 8px; padding: 8px; font-size: 11px; color: var(--text-muted); background: rgba(0,188,212,0.05); }
+    
+    /* Main Card (destaque) */
+    .main-highlight { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 4px; }
+    .highlight-badge { display: inline-block; background: rgba(0,188,212,0.15); color: var(--accent); padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; margin-bottom: 8px; }
+    .highlight-title { font-size: 18px; font-weight: 700; margin: 0 0 4px; }
+    .highlight-subtitle { font-size: 12px; color: var(--text-muted); margin: 0 0 14px; }
+    .highlight-price { font-size: 28px; font-weight: 800; color: var(--accent); margin: 0 0 6px; }
+    .highlight-year { font-size: 11px; color: var(--text-muted); }
+    
+    /* Cards Grid */
+    .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+    .card-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 700; margin-bottom: 6px; }
+    .card-value { font-size: 18px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+    .card-sub { font-size: 11px; color: var(--text-muted); }
+    .card-value.positive { color: var(--good); }
+    .card-value.negative { color: var(--danger); }
+    
+    /* Chart Grid */
+    .grid-2 { display: grid; grid-template-columns: 1fr 280px; gap: 12px; }
+    .panel { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+    .panel-title { font-size: 13px; font-weight: 700; margin: 0 0 8px; color: var(--text); }
+    .panel-subtitle { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; }
+    .chart-container { position: relative; height: 320px; width: 100%; }
+    
+    /* Info Table */
+    .info-table { width: 100%; font-size: 11px; border-collapse: collapse; }
+    .info-table tr { border-bottom: 1px solid var(--border); }
+    .info-table td { padding: 6px; }
+    .info-table td:first-child { color: var(--text-muted); font-weight: 600; width: 50%; }
+    .info-table td:last-child { color: var(--text); text-align: right; }
+    
+    /* Similar Cards */
+    .similar-item { background: rgba(0,188,212,0.08); border: 1px solid var(--border); border-radius: 8px; padding: 8px; margin-bottom: 6px; cursor: pointer; transition: all 0.15s; }
+    .similar-item:hover { background: rgba(0,188,212,0.12); border-color: var(--accent); }
+    .similar-name { font-size: 11px; font-weight: 600; color: var(--text); }
+    .similar-price { font-size: 11px; color: var(--accent); margin-top: 2px; font-weight: 700; }
+    .similar-diff { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+    .empty { text-align: center; color: var(--text-muted); font-size: 11px; padding: 12px; }
+    
+    @media (max-width: 1200px) {
+      .cards { grid-template-columns: repeat(2, 1fr); }
       .grid-2 { grid-template-columns: 1fr; }
     }
-    @media (max-width: 1100px) {
+    @media (max-width: 900px) {
       .wrap { grid-template-columns: 1fr; }
-      .topbar { position: static; }
-    }
-    @media (max-width: 640px) {
-      .cards { grid-template-columns: repeat(2, minmax(0,1fr)); }
-      .topbar h1 { font-size: 18px; }
-      .topbar-right { justify-content: flex-start; }
-      .badge { width: 100%; border-radius: 12px; }
+      .sidebar { max-height: none; }
     }
   </style>
 </head>
 <body>
 
 <div class="topbar">
-  <div>
-    <h1>Tabela FIPE • v1.0</h1>
-    <div class="subtitle">Consulta de códigos FIPE, histórico de valores por ano e comparação com modelos de valor similar</div>
-  </div>
-  <div class="topbar-right">
-    <div class="badge" id="badgePeriodo">Período: --</div>
-    <div class="badge sync-badge sync-pending" id="badgeSyncStatus">Sincronização: aguardando carga inicial</div>
-    <button class="btn secondary" id="btnReloadData">Atualizar do repositório</button>
-  </div>
+  <h1>FIPE</h1>
 </div>
 
 <div id="errorBanner"></div>
 
-<div class="wrap" id="dashboardRoot">
+<div class="wrap">
   <aside class="sidebar">
+    <!-- Busca Rápida -->
     <div class="section-title">Busca Rápida</div>
-    <input type="text" id="quickSearch" placeholder="Marca, modelo, versão ou código..." style="width:100%; padding:7px 9px; border:1px solid #d1d5db; border-radius:10px; margin-bottom:8px;">
+    <div class="dropdown-wrapper">
+      <div class="dropdown-label" onclick="toggleSearch()">
+        <span id="searchLabel">Digite para buscar...</span>
+        <span class="dropdown-icon">⌕</span>
+      </div>
+      <input type="text" id="quickSearchInput" style="width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:8px; background:var(--border); color:var(--text); font-size:12px; margin-top:2px; display:none;" placeholder="Marca, modelo, código...">
+    </div>
 
-    <div class="section-title" style="margin-top:10px">Refinar por tipo</div>
-    <div class="filters" id="tipoButtons"></div>
+    <!-- Tipo de Veículo -->
+    <div class="section-title" style="margin-top:14px;">Tipo</div>
+    <div class="dropdown-wrapper">
+      <div class="dropdown-label" onclick="toggleDropdown('tipo')">
+        <span id="tipoLabel">Selecione...</span>
+        <span class="dropdown-icon">▼</span>
+      </div>
+      <div class="dropdown-menu" id="tipoMenu"></div>
+    </div>
 
-    <div class="section-title" style="margin-top:10px">Marca</div>
-    <input type="text" id="marcaSearch" placeholder="Digite..." style="width:100%; padding:7px 9px; border:1px solid #d1d5db; border-radius:10px; margin-bottom:6px;">
-    <div id="marcaList" style="max-height:150px; overflow-y:auto;"></div>
+    <!-- Marca -->
+    <div class="section-title">Marca</div>
+    <div class="dropdown-wrapper">
+      <div class="dropdown-label" onclick="toggleDropdown('marca')">
+        <span id="marcaLabel">Selecione...</span>
+        <span class="dropdown-icon">▼</span>
+      </div>
+      <div class="dropdown-menu" id="marcaMenu"></div>
+    </div>
 
-    <div class="section-title" style="margin-top:10px">Modelo</div>
-    <input type="text" id="modeloSearch" placeholder="Digite..." style="width:100%; padding:7px 9px; border:1px solid #d1d5db; border-radius:10px; margin-bottom:6px;">
-    <div id="modeloList" style="max-height:150px; overflow-y:auto;"></div>
+    <!-- Modelo -->
+    <div class="section-title">Modelo</div>
+    <div class="dropdown-wrapper">
+      <div class="dropdown-label" onclick="toggleDropdown('modelo')">
+        <span id="modeloLabel">Selecione...</span>
+        <span class="dropdown-icon">▼</span>
+      </div>
+      <div class="dropdown-menu" id="modeloMenu"></div>
+    </div>
 
-    <div class="section-title" style="margin-top:10px">Versões encontradas</div>
-    <div id="versoesList" style="max-height:180px; overflow-y:auto;"></div>
+    <!-- Versão -->
+    <div class="section-title">Versão</div>
+    <div class="dropdown-wrapper">
+      <div class="dropdown-label" onclick="toggleDropdown('versao')">
+        <span id="versaoLabel">Selecione...</span>
+        <span class="dropdown-icon">▼</span>
+      </div>
+      <div class="dropdown-menu" id="versaoMenu"></div>
+    </div>
 
-    <div class="status-box" id="statusBox">Carregando base de dados do repositório...</div>
+    <!-- Ano (Slider) -->
+    <div class="section-title" style="margin-top:14px;">Ano</div>
+    <div class="slider-wrapper">
+      <div class="slider-values">
+        <span id="anoMin">--</span>
+        <span id="anoMax">--</span>
+      </div>
+      <input type="range" id="anoSlider" min="1980" max="2025" value="2025" style="width:100%;">
+    </div>
+
+    <!-- Combustível -->
+    <div class="section-title" style="margin-top:14px;">Combustível</div>
+    <div class="dropdown-wrapper">
+      <div class="dropdown-label" onclick="toggleDropdown('combustivel')">
+        <span id="combustivelLabel">Todos</span>
+        <span class="dropdown-icon">▼</span>
+      </div>
+      <div class="dropdown-menu" id="combustivelMenu"></div>
+    </div>
+
+    <div class="status-box" id="statusBox">Carregando base de dados...</div>
   </aside>
 
   <main class="main">
-    <section class="cards">
-      <div class="card"><div class="label">Código FIPE</div><div class="value" id="cardCodigo">--</div><div class="sub" id="cardCodigoSub">Identificador único</div></div>
-      <div class="card"><div class="label">Preço Atual</div><div class="value" id="cardPreco">--</div><div class="sub" id="cardPrecoSub">Ano modelo --</div></div>
-      <div class="card"><div class="label">Período de Anos</div><div class="value" id="cardPeriodo">--</div><div class="sub" id="cardPeriodoSub">Anos com registro</div></div>
-      <div class="card"><div class="label">Variação Total</div><div class="value" id="cardVariacao">--</div><div class="sub" id="cardVariacaoSub">Desde o primeiro ano</div></div>
-      <div class="card"><div class="label">Combustível</div><div class="value" id="cardCombustivel">--</div><div class="sub" id="cardCombustivelSub">Modelo atual</div></div>
-    </section>
+    <!-- Destaque do Veículo Selecionado -->
+    <div class="main-highlight">
+      <div class="highlight-badge" id="highlightBadge">--</div>
+      <div class="highlight-title" id="highlightTitle">Selecione um veículo</div>
+      <div class="highlight-subtitle" id="highlightSubtitle">--</div>
+      <div class="highlight-price" id="highlightPrice">--</div>
+      <div class="highlight-year" id="highlightYear">--</div>
+    </div>
 
-    <section class="grid-2">
+    <!-- Cards de Informações -->
+    <div class="cards">
+      <div class="card">
+        <div class="card-label">Período</div>
+        <div class="card-value" id="cardPeriodo">--</div>
+        <div class="card-sub" id="cardPeriodoSub">--</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Variação</div>
+        <div class="card-value" id="cardVariacao">--</div>
+        <div class="card-sub" id="cardVariacaoSub">--</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Combustível</div>
+        <div class="card-value" id="cardCombustivel">--</div>
+        <div class="card-sub">Modelo atual</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Status</div>
+        <div class="card-value" id="cardStatus">--</div>
+        <div class="card-sub">Sincronização</div>
+      </div>
+    </div>
+
+    <!-- Gráfico + Info Lateral -->
+    <div class="grid-2">
       <div class="panel">
-        <div class="head-row">
-          <h3 style="margin:0;font-size:16px" id="chartTitle">Histórico de Valores</h3>
-        </div>
-        <div class="kicker">Evolução do valor FIPE ao longo dos anos por ano-modelo disponível.</div>
+        <div class="panel-title">Histórico de Valores</div>
+        <div class="panel-subtitle">Evolução por ano disponível</div>
         <div class="chart-container">
           <canvas id="historyChart"></canvas>
         </div>
       </div>
 
       <div class="panel">
-        <div class="side-section">
-          <h4>Informações do Veículo</h4>
-          <table>
-            <tr><td style="font-weight:700; font-size:10px; color:#6b7280;">Tipo</td><td id="sideVeiculoTipo" style="text-align:right">--</td></tr>
-            <tr><td style="font-weight:700; font-size:10px; color:#6b7280;">Marca</td><td id="sideVeiculoMarca" style="text-align:right">--</td></tr>
-            <tr><td style="font-weight:700; font-size:10px; color:#6b7280;">Modelo</td><td id="sideVeiculoModelo" style="text-align:right; font-size:11px;">--</td></tr>
-            <tr><td style="font-weight:700; font-size:10px; color:#6b7280;">Versão</td><td id="sideVeiculoVersao" style="text-align:right; font-size:11px;">--</td></tr>
-          </table>
-        </div>
-
-        <div class="side-section">
-          <h4>Modelos com Preço Similar</h4>
-          <div id="similarList" style="font-size:11px;"></div>
-        </div>
+        <div class="panel-title">Informações</div>
+        <table class="info-table">
+          <tr><td>Tipo</td><td id="infoTipo">--</td></tr>
+          <tr><td>Marca</td><td id="infoMarca">--</td></tr>
+          <tr><td>Modelo</td><td id="infoModelo">--</td></tr>
+          <tr><td>Versão</td><td id="infoVersao">--</td></tr>
+        </table>
+        <div class="panel-title" style="margin-top:12px;">Similares</div>
+        <div id="similarList"></div>
       </div>
-    </section>
+    </div>
   </main>
 </div>
 
@@ -242,6 +304,8 @@ const REPO_FETCH_TIMEOUT_MS = 30000;
 let allData = [];
 let currentSelection = null;
 let myChart = null;
+let filters = { tipo: null, marca: null, modelo: null, versao: null, ano: 2025, combustivel: null };
+let openDropdown = null;
 
 function normaliza(str) {
   return String(str || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
@@ -255,27 +319,62 @@ function showError(msg) {
   const banner = document.getElementById('errorBanner');
   banner.textContent = msg;
   banner.style.display = 'block';
-  updateStatus('Erro ao carregar: ' + msg, 'error');
+  document.getElementById('statusBox').textContent = 'Erro: ' + msg;
 }
 
-function updateStatus(msg, status = 'pending') {
-  const statusBox = document.getElementById('statusBox');
-  const badge = document.getElementById('badgeSyncStatus');
-  statusBox.textContent = msg;
-  badge.textContent = 'Sincronização: ' + msg;
-  badge.classList.remove('sync-pending', 'sync-ok', 'sync-error');
-  badge.classList.add(status === 'ok' ? 'sync-ok' : status === 'error' ? 'sync-error' : 'sync-pending');
+function updateStatus(msg) {
+  document.getElementById('statusBox').textContent = msg;
+  document.getElementById('cardStatus').textContent = msg.split(':')[0].trim();
 }
+
+function toggleDropdown(name) {
+  const menu = document.getElementById(name + 'Menu');
+  if (openDropdown && openDropdown !== menu) openDropdown.classList.remove('open');
+  menu.classList.toggle('open');
+  openDropdown = menu.classList.contains('open') ? menu : null;
+}
+
+function toggleSearch() {
+  const input = document.getElementById('quickSearchInput');
+  input.style.display = input.style.display === 'none' ? 'block' : 'none';
+  if (input.style.display === 'block') input.focus();
+}
+
+function closeAllDropdowns() {
+  document.querySelectorAll('.dropdown-menu.open').forEach(m => m.classList.remove('open'));
+  openDropdown = null;
+}
+
+document.getElementById('quickSearchInput').addEventListener('input', (e) => {
+  const q = normaliza(e.target.value);
+  if (q.length < 2) return;
+  const match = allData.find(d => 
+    normaliza(d.marca).includes(q) || 
+    normaliza(d.modelo).includes(q) || 
+    normaliza(d.versao).includes(q) || 
+    normaliza(d.codigo).includes(q)
+  );
+  if (match) {
+    selectVehicle(match);
+    closeAllDropdowns();
+    document.getElementById('quickSearchInput').value = '';
+    document.getElementById('searchLabel').textContent = 'Digite para buscar...';
+  }
+});
+
+document.getElementById('anoSlider').addEventListener('input', (e) => {
+  const ano = parseInt(e.target.value);
+  filters.ano = ano;
+  document.getElementById('anoMin').textContent = ano;
+  updateSelection();
+});
 
 async function loadExcel() {
   try {
-    updateStatus('Carregando fipe.xlsx...');
+    updateStatus('Carregando dados...');
     const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), REPO_FETCH_TIMEOUT_MS));
-    const response = await Promise.race([
-      fetch(REPO_EXCEL_PATH),
-      timeout
-    ]);
-
+    const response = await Promise.race([fetch(REPO_EXCEL_PATH), timeout]);
+    
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     
     const arrayBuffer = await response.arrayBuffer();
@@ -283,7 +382,7 @@ async function loadExcel() {
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
     const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
 
-    if (rows.length < 2) throw new Error('Planilha vazia ou inválida');
+    if (rows.length < 2) throw new Error('Planilha vazia');
 
     allData = [];
     const headers = rows[0];
@@ -303,24 +402,28 @@ async function loadExcel() {
       const cod = String(r[idxCod] || '').trim();
       if (!cod) continue;
 
-      const entry = {
-        tipo: r[idxVeic],
-        marca: r[idxMarca],
-        modelo: r[idxModelo],
-        versao: r[idxVersao] || '',
-        valor: Number(r[idxValor]) || 0,
-        ano: Number(r[idxAno]) || 0,
-        combustivel: r[idxComb] || '',
-        codigo: cod
-      };
-
       if (!byCode.has(cod)) {
-        byCode.set(cod, { tipo: entry.tipo, marca: entry.marca, modelo: entry.modelo, versao: entry.versao, historico: [], latest: null });
+        byCode.set(cod, {
+          tipo: r[idxVeic],
+          marca: r[idxMarca],
+          modelo: r[idxModelo],
+          versao: r[idxVersao] || '',
+          historico: [],
+          latest: null
+        });
       }
       const item = byCode.get(cod);
-      item.historico.push({ ano: entry.ano, valor: entry.valor, combustivel: entry.combustivel });
-      if (!item.latest || entry.ano > item.latest.ano) {
-        item.latest = { ano: entry.ano, valor: entry.valor, combustivel: entry.combustivel };
+      item.historico.push({
+        ano: Number(r[idxAno]) || 0,
+        valor: Number(r[idxValor]) || 0,
+        combustivel: r[idxComb] || ''
+      });
+      if (!item.latest || r[idxAno] > item.latest.ano) {
+        item.latest = {
+          ano: Number(r[idxAno]) || 0,
+          valor: Number(r[idxValor]) || 0,
+          combustivel: r[idxComb] || ''
+        };
       }
     }
 
@@ -331,148 +434,205 @@ async function loadExcel() {
 
     if (allData.length === 0) throw new Error('Nenhum código FIPE encontrado');
 
-    updateStatus(`${allData.length} códigos FIPE carregados`, 'ok');
+    updateStatus(`${allData.length} códigos carregados`);
     document.getElementById('errorBanner').style.display = 'none';
     buildUI();
   } catch (err) {
-    showError(`Não foi possível carregar fipe.xlsx. ${err.message}`);
+    showError(`Erro ao carregar: ${err.message}`);
   }
 }
 
 function buildUI() {
+  // Tipos
   const tipos = [...new Set(allData.map(d => d.tipo))].sort();
-  const tipoDiv = document.getElementById('tipoButtons');
+  const tipoMenu = document.getElementById('tipoMenu');
+  tipoMenu.innerHTML = '';
   tipos.forEach(tipo => {
-    const btn = document.createElement('button');
-    btn.className = 'btn secondary';
-    btn.textContent = tipo;
-    btn.style.width = '100%';
-    btn.style.marginBottom = '4px';
-    btn.addEventListener('click', () => filterByTipo(tipo));
-    tipoDiv.appendChild(btn);
+    const item = document.createElement('div');
+    item.className = 'dropdown-item';
+    item.textContent = tipo;
+    item.addEventListener('click', () => selectTipo(tipo));
+    tipoMenu.appendChild(item);
   });
 
-  document.getElementById('quickSearch').addEventListener('input', (e) => {
-    const q = normaliza(e.target.value);
-    if (q.length < 2) return;
-    const match = allData.find(d => 
-      normaliza(d.marca).includes(q) || 
-      normaliza(d.modelo).includes(q) || 
-      normaliza(d.versao).includes(q) || 
-      normaliza(d.codigo).includes(q)
-    );
-    if (match) selectVehicle(match);
+  // Combustíveis
+  const combusts = [...new Set(allData.flatMap(d => d.historico.map(h => h.combustivel)))].sort();
+  const combMenu = document.getElementById('combustivelMenu');
+  combMenu.innerHTML = '<div class="dropdown-item" onclick="selectCombustivel(null)">Todos</div>';
+  combusts.forEach(c => {
+    if (!c) return;
+    const item = document.createElement('div');
+    item.className = 'dropdown-item';
+    item.textContent = c;
+    item.addEventListener('click', () => selectCombustivel(c));
+    combMenu.appendChild(item);
   });
 
-  const firstTipo = tipos[0];
-  filterByTipo(firstTipo);
+  // Anos
+  const allAnos = [...new Set(allData.flatMap(d => d.historico.map(h => h.ano)))].sort();
+  const minAno = Math.min(...allAnos);
+  const maxAno = Math.max(...allAnos);
+  document.getElementById('anoSlider').min = minAno;
+  document.getElementById('anoSlider').max = maxAno;
+  document.getElementById('anoSlider').value = maxAno;
+  document.getElementById('anoMin').textContent = minAno;
+  document.getElementById('anoMax').textContent = maxAno;
+  filters.ano = maxAno;
+
+  selectTipo(tipos[0]);
 }
 
-function filterByTipo(tipo) {
-  const filtered = allData.filter(d => d.tipo === tipo);
-  const marcas = [...new Set(filtered.map(d => d.marca))].sort();
-
-  const marcaDiv = document.getElementById('marcaList');
-  marcaDiv.innerHTML = '';
+function selectTipo(tipo) {
+  filters.tipo = tipo;
+  filters.marca = null;
+  filters.modelo = null;
+  filters.versao = null;
+  document.getElementById('tipoLabel').textContent = tipo;
+  closeAllDropdowns();
+  
+  const marcas = [...new Set(allData.filter(d => d.tipo === tipo).map(d => d.marca))].sort();
+  const marcaMenu = document.getElementById('marcaMenu');
+  marcaMenu.innerHTML = '';
   marcas.forEach(marca => {
     const item = document.createElement('div');
-    item.className = 'similar-item';
-    item.style.margin = '4px 0';
+    item.className = 'dropdown-item';
     item.textContent = marca;
-    item.addEventListener('click', () => filterByMarca(tipo, marca));
-    marcaDiv.appendChild(item);
+    item.addEventListener('click', () => selectMarca(marca));
+    marcaMenu.appendChild(item);
   });
 
-  const allAnos = [...new Set(filtered.flatMap(d => d.historico.map(h => h.ano)))].sort();
-  const periodoStr = allAnos.length > 0 ? `${allAnos[0]}-${allAnos[allAnos.length-1]}` : '--';
-  document.getElementById('badgePeriodo').textContent = `Período: ${periodoStr}`;
-
-  if (marcas.length > 0) {
-    filterByMarca(tipo, marcas[0]);
-  }
+  document.getElementById('marcaLabel').textContent = 'Selecione...';
+  document.getElementById('modeloLabel').textContent = 'Selecione...';
+  document.getElementById('versaoLabel').textContent = 'Selecione...';
+  selectMarca(marcas[0]);
 }
 
-function filterByMarca(tipo, marca) {
-  const filtered = allData.filter(d => d.tipo === tipo && d.marca === marca);
-  const modelos = [...new Set(filtered.map(d => d.modelo))].sort();
+function selectMarca(marca) {
+  filters.marca = marca;
+  filters.modelo = null;
+  filters.versao = null;
+  document.getElementById('marcaLabel').textContent = marca;
+  closeAllDropdowns();
 
-  const modeloDiv = document.getElementById('modeloList');
-  modeloDiv.innerHTML = '';
+  const modelos = [...new Set(allData.filter(d => d.tipo === filters.tipo && d.marca === marca).map(d => d.modelo))].sort();
+  const modeloMenu = document.getElementById('modeloMenu');
+  modeloMenu.innerHTML = '';
   modelos.forEach(modelo => {
     const item = document.createElement('div');
-    item.className = 'similar-item';
-    item.style.margin = '4px 0';
+    item.className = 'dropdown-item';
     item.textContent = modelo;
-    item.addEventListener('click', () => filterByModelo(tipo, marca, modelo));
-    modeloDiv.appendChild(item);
+    item.addEventListener('click', () => selectModelo(modelo));
+    modeloMenu.appendChild(item);
   });
 
-  if (modelos.length > 0) {
-    filterByModelo(tipo, marca, modelos[0]);
-  }
+  document.getElementById('modeloLabel').textContent = 'Selecione...';
+  document.getElementById('versaoLabel').textContent = 'Selecione...';
+  selectModelo(modelos[0]);
 }
 
-function filterByModelo(tipo, marca, modelo) {
-  const filtered = allData.filter(d => d.tipo === tipo && d.marca === marca && d.modelo === modelo);
+function selectModelo(modelo) {
+  filters.modelo = modelo;
+  filters.versao = null;
+  document.getElementById('modeloLabel').textContent = modelo;
+  closeAllDropdowns();
 
-  const versoesDiv = document.getElementById('versoesList');
-  versoesDiv.innerHTML = '';
-  filtered.forEach(v => {
+  const versoes = allData.filter(d => d.tipo === filters.tipo && d.marca === filters.marca && d.modelo === modelo);
+  const versaoMenu = document.getElementById('versaoMenu');
+  versaoMenu.innerHTML = '';
+  versoes.forEach(v => {
     const item = document.createElement('div');
-    item.className = 'similar-item';
-    item.style.margin = '4px 0';
-    item.innerHTML = `<div class="similar-name">${v.versao || '(sem versão)'}</div><div class="similar-price">${fmt(v.latest.valor)} • ${v.codigo}</div>`;
-    item.addEventListener('click', () => selectVehicle(v));
-    versoesDiv.appendChild(item);
+    item.className = 'dropdown-item';
+    item.textContent = v.versao || '(sem versão)';
+    item.addEventListener('click', () => selectVersao(v));
+    versaoMenu.appendChild(item);
   });
 
-  if (filtered.length > 0) {
+  document.getElementById('versaoLabel').textContent = 'Selecione...';
+  if (versoes.length > 0) selectVersao(versoes[0]);
+}
+
+function selectVersao(veiculo) {
+  filters.versao = veiculo.codigo;
+  document.getElementById('versaoLabel').textContent = veiculo.versao || '(sem versão)';
+  selectVehicle(veiculo);
+  closeAllDropdowns();
+}
+
+function selectCombustivel(comb) {
+  filters.combustivel = comb;
+  document.getElementById('combustivelLabel').textContent = comb || 'Todos';
+  updateSelection();
+  closeAllDropdowns();
+}
+
+function updateSelection() {
+  if (!currentSelection) return;
+  const filtered = applyFilters([currentSelection]);
+  if (filtered.length === 0) {
+    selectVehicle(currentSelection);
+  } else {
     selectVehicle(filtered[0]);
   }
 }
 
+function applyFilters(vehicles) {
+  return vehicles.filter(v => {
+    if (filters.combustivel && !v.historico.some(h => h.combustivel === filters.combustivel)) return false;
+    if (!v.historico.some(h => h.ano <= filters.ano)) return false;
+    return true;
+  });
+}
+
 function selectVehicle(data) {
   currentSelection = data;
-  document.getElementById('cardCodigo').textContent = data.codigo;
-  document.getElementById('cardCodigoSub').textContent = data.tipo;
-  document.getElementById('cardPreco').textContent = fmt(data.latest.valor);
-  document.getElementById('cardPrecoSub').textContent = `Ano modelo ${data.latest.ano}`;
-  document.getElementById('cardCombustivel').textContent = data.latest.combustivel || '—';
+  const filtered = applyFilters([data]);
+  if (filtered.length === 0) return;
+  
+  const vData = filtered[0];
+  const historico = vData.historico.filter(h => h.ano <= filters.ano);
+  
+  document.getElementById('highlightBadge').textContent = vData.codigo;
+  document.getElementById('highlightTitle').textContent = vData.modelo + (vData.versao ? ' — ' + vData.versao : '');
+  document.getElementById('highlightSubtitle').textContent = vData.tipo + ' • ' + vData.marca;
+  document.getElementById('highlightPrice').textContent = fmt(vData.latest.valor);
+  document.getElementById('highlightYear').textContent = `Ano modelo ${vData.latest.ano}`;
 
-  const anos = data.historico.map(h => h.ano).sort((a, b) => a - b);
+  const anos = historico.map(h => h.ano).sort((a, b) => a - b);
   const periodoStr = anos.length > 0 ? `${anos[0]}-${anos[anos.length-1]}` : '--';
   document.getElementById('cardPeriodo').textContent = periodoStr;
   document.getElementById('cardPeriodoSub').textContent = `${anos.length} ano${anos.length === 1 ? '' : 's'}`;
 
-  if (data.historico.length > 1) {
-    const primeiro = data.historico[0].valor;
-    const ultimo = data.historico[data.historico.length - 1].valor;
+  if (historico.length > 1) {
+    const primeiro = historico[0].valor;
+    const ultimo = historico[historico.length - 1].valor;
     if (primeiro > 0) {
       const variacao = ((ultimo - primeiro) / primeiro) * 100;
-      const variacaoEl = document.getElementById('cardVariacao');
-      variacaoEl.textContent = (variacao >= 0 ? '+' : '') + variacao.toFixed(1) + '%';
-      variacaoEl.classList.remove('good', 'bad');
-      variacaoEl.classList.add(variacao >= 0 ? 'good' : 'bad');
-      document.getElementById('cardVariacaoSub').textContent = `${fmt(primeiro)} → ${fmt(ultimo)}`;
+      const varEl = document.getElementById('cardVariacao');
+      varEl.textContent = (variacao >= 0 ? '+' : '') + variacao.toFixed(1) + '%';
+      varEl.classList.remove('positive', 'negative');
+      varEl.classList.add(variacao >= 0 ? 'positive' : 'negative');
+      document.getElementById('cardVariacaoSub').textContent = fmt(primeiro) + ' → ' + fmt(ultimo);
     }
-  } else if (data.historico.length === 1) {
-    document.getElementById('cardVariacao').textContent = '—';
-    document.getElementById('cardVariacao').classList.remove('good', 'bad');
-    document.getElementById('cardVariacaoSub').textContent = 'Apenas um ano no histórico';
   }
 
-  document.getElementById('sideVeiculoTipo').textContent = data.tipo;
-  document.getElementById('sideVeiculoMarca').textContent = data.marca;
-  document.getElementById('sideVeiculoModelo').textContent = data.modelo;
-  document.getElementById('sideVeiculoVersao').textContent = data.versao || '—';
+  document.getElementById('cardCombustivel').textContent = vData.latest.combustivel || '—';
+  document.getElementById('infoTipo').textContent = vData.tipo;
+  document.getElementById('infoMarca').textContent = vData.marca;
+  document.getElementById('infoModelo').textContent = vData.modelo;
+  document.getElementById('infoVersao').textContent = vData.versao || '—';
 
-  renderChart(data);
-  renderSimilar(data);
+  renderChart(historico);
+  renderSimilar(vData, historico);
 }
 
-function renderChart(data) {
-  const labels = data.historico.map(h => String(h.ano));
-  const values = data.historico.map(h => h.valor);
+function renderChart(historico) {
+  const labels = historico.map(h => String(h.ano));
+  const values = historico.map(h => h.valor);
+  const variacoes = historico.map((h, i) => {
+    if (i === 0) return 0;
+    const prev = historico[i-1].valor;
+    return prev > 0 ? ((h.valor - prev) / prev * 100) : 0;
+  });
 
   const ctx = document.getElementById('historyChart').getContext('2d');
   if (myChart) myChart.destroy();
@@ -480,7 +640,7 @@ function renderChart(data) {
   const chartPlugin = {
     id: 'datalabels',
     afterDatasetsDraw(chart) {
-      const { ctx: ctxDraw, chartArea } = chart;
+      const { ctx: ctxDraw } = chart;
       chart.data.datasets.forEach((dataset, datasetIndex) => {
         const meta = chart.getDatasetMeta(datasetIndex);
         if (meta.hidden) return;
@@ -491,7 +651,7 @@ function renderChart(data) {
           const { x, y } = datapoint.getProps(['x', 'y'], true);
           ctxDraw.save();
           ctxDraw.font = 'bold 11px "Segoe UI"';
-          ctxDraw.fillStyle = '#111827';
+          ctxDraw.fillStyle = '#00bcd4';
           ctxDraw.textAlign = 'center';
           ctxDraw.textBaseline = 'bottom';
           ctxDraw.fillText(fmt(value), x, y - 5);
@@ -506,10 +666,10 @@ function renderChart(data) {
     data: {
       labels: labels,
       datasets: [{
-        label: 'Valor FIPE (R$)',
+        label: 'Valor FIPE',
         data: values,
-        backgroundColor: '#DA291C',
-        borderColor: '#AF272F',
+        backgroundColor: '#00bcd4',
+        borderColor: '#0097a9',
         borderWidth: 1
       }]
     },
@@ -520,23 +680,25 @@ function renderChart(data) {
         legend: { display: false },
         tooltip: {
           callbacks: {
-            label: function(ctx) { return fmt(ctx.parsed.y); }
+            label: function(ctx) {
+              const varPct = variacoes[ctx.dataIndex];
+              return (varPct > 0 ? '+' : '') + varPct.toFixed(1) + '% desde o ano anterior';
+            }
           }
-        },
-        datalabels: chartPlugin
+        }
       },
       scales: {
         y: {
           beginAtZero: true,
           ticks: {
             callback: function(v) { return fmt(v); },
-            color: '#6b7280',
+            color: '#9ca3af',
             font: { size: 10 }
           },
-          grid: { color: '#e5e7eb' }
+          grid: { color: '#2a3142' }
         },
         x: {
-          ticks: { color: '#6b7280', font: { size: 10 } },
+          ticks: { color: '#9ca3af', font: { size: 10 } },
           grid: { display: false }
         }
       }
@@ -545,19 +707,24 @@ function renderChart(data) {
   });
 }
 
-function renderSimilar(data) {
-  const target = data.latest.valor;
+function renderSimilar(vData, historico) {
+  if (historico.length === 0) {
+    document.getElementById('similarList').innerHTML = '<div class="empty">Nenhum dado disponível</div>';
+    return;
+  }
+
+  const target = historico[historico.length - 1].valor;
   const margin = target * 0.15;
   const similares = allData.filter(d => 
-    d.tipo === data.tipo && 
-    d.codigo !== data.codigo &&
+    d.tipo === vData.tipo && 
+    d.codigo !== vData.codigo &&
     d.latest.valor >= target - margin && 
     d.latest.valor <= target + margin
   ).slice(0, 5);
 
   const div = document.getElementById('similarList');
   if (similares.length === 0) {
-    div.innerHTML = '<div class="empty">Nenhum modelo com valor similar encontrado.</div>';
+    div.innerHTML = '<div class="empty">Nenhum modelo similar</div>';
     return;
   }
 
@@ -569,15 +736,18 @@ function renderSimilar(data) {
     item.innerHTML = `
       <div class="similar-name">${s.marca} ${s.modelo}</div>
       <div class="similar-price">${fmt(s.latest.valor)}</div>
-      <div class="similar-diff">${diff >= 0 ? '+' : ''}${diff}% • ${s.codigo}</div>
+      <div class="similar-diff">${diff >= 0 ? '+' : ''}${diff}%</div>
     `;
     item.addEventListener('click', () => selectVehicle(s));
     div.appendChild(item);
   });
 }
 
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.dropdown-wrapper')) closeAllDropdowns();
+});
+
 loadExcel();
-document.getElementById('btnReloadData').addEventListener('click', loadExcel);
 </script>
 
 </body>
