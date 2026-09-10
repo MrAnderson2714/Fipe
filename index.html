@@ -92,8 +92,8 @@
     .highlight-info-value { color: var(--text); font-weight: 600; }
     
     /* Cards Grid */
-    .cards { display: flex; gap: 10px; justify-content: center; }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; min-width: 140px; }
+    .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
     .card-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 700; margin-bottom: 6px; }
     .card-value { font-size: 18px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
     .card-sub { font-size: 11px; color: var(--text-muted); }
@@ -256,6 +256,15 @@ function fmt(val) {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(val);
 }
 
+// Comparador de ano considerando 0 como mais recente
+function compareAno(a, b) {
+  const aAno = typeof a === 'number' ? a : a.ano;
+  const bAno = typeof b === 'number' ? b : b.ano;
+  if (aAno === 0) return -1;
+  if (bAno === 0) return 1;
+  return bAno - aAno; // Decrescente
+}
+
 function showError(msg) {
   const banner = document.getElementById('errorBanner');
   banner.textContent = msg;
@@ -353,7 +362,7 @@ async function loadExcel() {
         valor: Number(r[idxValor]) || 0,
         combustivel: r[idxComb] || ''
       });
-      if (!item.latest || r[idxAno] > item.latest.ano) {
+      if (!item.latest || (r[idxAno] === 0 || (item.latest.ano !== 0 && r[idxAno] > item.latest.ano))) {
         item.latest = {
           ano: Number(r[idxAno]) || 0,
           valor: Number(r[idxValor]) || 0,
@@ -363,13 +372,13 @@ async function loadExcel() {
     }
 
     byCode.forEach((item, cod) => {
-      item.historico.sort((a, b) => a.ano - b.ano);
+      item.historico.sort(compareAno);
       allData.push({ codigo: cod, ...item });
     });
 
     if (allData.length === 0) throw new Error('Nenhum código FIPE encontrado');
 
-    updateStatus(`${allData.length} códigos carregados`);
+    updateStatus('Pronto');
     document.getElementById('errorBanner').style.display = 'none';
     buildUI();
   } catch (err) {
@@ -447,26 +456,30 @@ function selectModelo(modelo) {
   closeAllDropdowns();
 
   const versoes = allData.filter(d => d.tipo === filters.tipo && d.marca === filters.marca && d.modelo === modelo);
+  versoes.sort((a, b) => compareAno(a.latest.ano, b.latest.ano));
+  
   const versaoDiv = document.getElementById('versaoButtons');
   versaoDiv.innerHTML = '';
   versoes.forEach(v => {
     const btn = document.createElement('div');
     btn.className = 'versao-btn';
     const anoDeParaStr = v.historico.length > 1 
-      ? `${v.historico[0].ano}-${v.historico[v.historico.length-1].ano}` 
+      ? `${v.historico[v.historico.length-1].ano}-${v.historico[0].ano}` 
       : v.latest.ano;
     btn.textContent = `${v.versao || '(sem versão)'} • ${v.latest.combustivel || '—'} • ${anoDeParaStr}`;
-    btn.addEventListener('click', () => selectVersao(v));
+    btn.addEventListener('click', function() {
+      selectVersao(v, btn);
+    });
     versaoDiv.appendChild(btn);
   });
 
-  if (versoes.length > 0) selectVersao(versoes[0]);
+  if (versoes.length > 0) selectVersao(versoes[0], versaoDiv.firstChild);
 }
 
-function selectVersao(veiculo) {
+function selectVersao(veiculo, btnElement) {
   filters.versao = veiculo.codigo;
   document.querySelectorAll('.versao-btn').forEach(btn => btn.classList.remove('active'));
-  event.target.classList.add('active');
+  if (btnElement) btnElement.classList.add('active');
   selectVehicle(veiculo);
 }
 
@@ -486,16 +499,17 @@ function selectVehicle(data) {
   document.getElementById('infoHighlightComb').textContent = data.latest.combustivel || '—';
   document.getElementById('infoHighlightAno').textContent = data.latest.ano;
 
-  const anos = historico.map(h => h.ano).sort((a, b) => a - b);
-  const periodoStr = anos.length > 0 ? `${anos[0]}-${anos[anos.length-1]}` : '--';
+  const anos = historico.map(h => h.ano);
+  const anosOrdenados = anos.slice().sort(compareAno);
+  const periodoStr = anosOrdenados.length > 0 ? `${anosOrdenados[anosOrdenados.length-1]}-${anosOrdenados[0]}` : '--';
   document.getElementById('infoHighlightPeriodo').textContent = periodoStr;
 
   document.getElementById('cardHistorico').textContent = historico.length;
   document.getElementById('cardHistoricoSub').textContent = `Registros totais`;
 
   if (historico.length > 1) {
-    const primeiro = historico[0].valor;
-    const ultimo = historico[historico.length - 1].valor;
+    const primeiro = historico[historico.length - 1].valor;
+    const ultimo = historico[0].valor;
     if (primeiro > 0) {
       const variacao = ((ultimo - primeiro) / primeiro) * 100;
       const varEl = document.getElementById('cardVariacao');
@@ -511,11 +525,12 @@ function selectVehicle(data) {
 }
 
 function renderChart(historico) {
-  const labels = historico.map(h => String(h.ano));
-  const values = historico.map(h => h.valor);
-  const variacoes = historico.map((h, i) => {
+  const sortedHistorico = historico.slice().sort(compareAno);
+  const labels = sortedHistorico.map(h => String(h.ano));
+  const values = sortedHistorico.map(h => h.valor);
+  const variacoes = sortedHistorico.map((h, i) => {
     if (i === 0) return 0;
-    const prev = historico[i-1].valor;
+    const prev = sortedHistorico[i-1].valor;
     return prev > 0 ? ((h.valor - prev) / prev * 100) : 0;
   });
 
@@ -591,8 +606,7 @@ function renderChart(historico) {
     plugins: [chartPlugin]
   });
 
-  // Clique nas barras
-  ctx.canvas.addEventListener('click', (e) => {
+  ctx.canvas.addEventListener('click', function handleBarClick(e) {
     const rect = ctx.canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -618,7 +632,7 @@ function renderSimilar(vData, historico, barValue = null) {
       d.latest.valor >= target - margin && 
       d.latest.valor <= target + margin
     )
-    .sort(() => Math.random() - 0.5)
+    .sort((a, b) => compareAno(a.latest.ano, b.latest.ano))
     .slice(0, 30);
 
   const div = document.getElementById('similarList');
