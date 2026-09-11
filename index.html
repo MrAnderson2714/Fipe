@@ -86,21 +86,18 @@
     .highlight-title { font-size: 18px; font-weight: 700; margin: 0 0 4px; }
     .highlight-subtitle { font-size: 12px; color: var(--text-muted); margin: 0 0 12px; }
     .highlight-price { font-size: 28px; font-weight: 800; color: var(--accent); margin: 0 0 4px; }
+    .highlight-info { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px; }
+    .highlight-info-item { display: flex; flex-direction: column; }
+    .highlight-info-label { color: var(--text-muted); margin-bottom: 2px; }
+    .highlight-info-value { color: var(--text); font-weight: 600; }
     
     /* Info Grid 4x2 */
-    .info-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px; }
+    .info-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
     .info-card { background: rgba(0,188,212,0.08); border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-size: 11px; }
     .info-card-label { color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
-    .info-card-value { color: var(--text); font-weight: 700; }
-    
-    /* Cards Grid */
-    .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
-    .card-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 700; margin-bottom: 6px; }
-    .card-value { font-size: 18px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
-    .card-sub { font-size: 11px; color: var(--text-muted); }
-    .card-value.positive { color: var(--good); }
-    .card-value.negative { color: var(--danger); }
+    .info-card-value { color: var(--text); font-weight: 700; font-size: 14px; }
+    .info-card-value.positive { color: var(--good); }
+    .info-card-value.negative { color: var(--danger); }
     
     /* Chart Panel */
     .chart-panel { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; flex: 1; min-width: 0; }
@@ -182,26 +179,28 @@
       <div class="highlight-title" id="highlightTitle">Selecione um veículo</div>
       <div class="highlight-subtitle" id="highlightSubtitle">--</div>
       <div class="highlight-price" id="highlightPrice">--</div>
+      <div class="highlight-info">
+        <div class="highlight-info-item">
+          <span class="highlight-info-label">Tipo</span>
+          <span class="highlight-info-value" id="infoHighlightTipo">--</span>
+        </div>
+        <div class="highlight-info-item">
+          <span class="highlight-info-label">Marca</span>
+          <span class="highlight-info-value" id="infoHighlightMarca">--</span>
+        </div>
+        <div class="highlight-info-item">
+          <span class="highlight-info-label">Modelo</span>
+          <span class="highlight-info-value" id="infoHighlightModelo">--</span>
+        </div>
+        <div class="highlight-info-item">
+          <span class="highlight-info-label">Versão</span>
+          <span class="highlight-info-value" id="infoHighlightVersao">--</span>
+        </div>
+      </div>
     </div>
 
     <!-- Info Grid 4x2 -->
     <div class="info-grid">
-      <div class="info-card">
-        <div class="info-card-label">Tipo</div>
-        <div class="info-card-value" id="infoTipo">--</div>
-      </div>
-      <div class="info-card">
-        <div class="info-card-label">Marca</div>
-        <div class="info-card-value" id="infoMarca">--</div>
-      </div>
-      <div class="info-card">
-        <div class="info-card-label">Modelo</div>
-        <div class="info-card-value" id="infoModelo">--</div>
-      </div>
-      <div class="info-card">
-        <div class="info-card-label">Versão</div>
-        <div class="info-card-value" id="infoVersao">--</div>
-      </div>
       <div class="info-card">
         <div class="info-card-label">Ano Modelo</div>
         <div class="info-card-value" id="infoAno">--</div>
@@ -218,19 +217,17 @@
         <div class="info-card-label">Registros</div>
         <div class="info-card-value" id="infoRegistros">--</div>
       </div>
-    </div>
-
-    <!-- Cards de Informações -->
-    <div class="cards">
-      <div class="card">
-        <div class="card-label">Variação</div>
-        <div class="card-value" id="cardVariacao">--</div>
-        <div class="card-sub" id="cardVariacaoSub">--</div>
+      <div class="info-card">
+        <div class="info-card-label">Variação</div>
+        <div class="info-card-value" id="infoVariacao">--</div>
       </div>
-      <div class="card">
-        <div class="card-label">Histórico</div>
-        <div class="card-value" id="cardHistorico">--</div>
-        <div class="card-sub" id="cardHistoricoSub">--</div>
+      <div class="info-card">
+        <div class="info-card-label">Histórico</div>
+        <div class="info-card-value" id="infoHistorico">--</div>
+      </div>
+      <div class="info-card" style="grid-column: 1 / 3;">
+        <div class="info-card-label">Valores</div>
+        <div class="info-card-value" id="infoValores">-- → --</div>
       </div>
     </div>
 
@@ -507,11 +504,13 @@ function selectVehicle(data) {
   document.getElementById('highlightSubtitle').textContent = data.tipo + ' • ' + data.marca;
   document.getElementById('highlightPrice').textContent = fmt(data.latest.valor);
   
+  // Info highlight
+  document.getElementById('infoHighlightTipo').textContent = data.tipo;
+  document.getElementById('infoHighlightMarca').textContent = data.marca;
+  document.getElementById('infoHighlightModelo').textContent = data.modelo;
+  document.getElementById('infoHighlightVersao').textContent = data.versao || '—';
+
   // Info grid
-  document.getElementById('infoTipo').textContent = data.tipo;
-  document.getElementById('infoMarca').textContent = data.marca;
-  document.getElementById('infoModelo').textContent = data.modelo;
-  document.getElementById('infoVersao').textContent = data.versao || '—';
   document.getElementById('infoAno').textContent = data.latest.ano;
   document.getElementById('infoCombustivel').textContent = data.latest.combustivel || '—';
 
@@ -521,19 +520,18 @@ function selectVehicle(data) {
   document.getElementById('infoPeriodo').textContent = periodoStr;
   document.getElementById('infoRegistros').textContent = historico.length;
 
-  document.getElementById('cardHistorico').textContent = historico.length;
-  document.getElementById('cardHistoricoSub').textContent = `Registros totais`;
+  document.getElementById('infoHistorico').textContent = historico.length;
 
   if (historico.length > 1) {
     const primeiro = historico[historico.length - 1].valor;
     const ultimo = historico[0].valor;
     if (primeiro > 0) {
       const variacao = ((ultimo - primeiro) / primeiro) * 100;
-      const varEl = document.getElementById('cardVariacao');
+      const varEl = document.getElementById('infoVariacao');
       varEl.textContent = (variacao >= 0 ? '+' : '') + variacao.toFixed(1) + '%';
       varEl.classList.remove('positive', 'negative');
       varEl.classList.add(variacao >= 0 ? 'positive' : 'negative');
-      document.getElementById('cardVariacaoSub').textContent = fmt(primeiro) + ' → ' + fmt(ultimo);
+      document.getElementById('infoValores').textContent = fmt(primeiro) + ' → ' + fmt(ultimo);
     }
   }
 
@@ -542,7 +540,13 @@ function selectVehicle(data) {
 }
 
 function renderChart(historico) {
-  const sortedHistorico = historico.slice().sort(compareAno);
+  // Ordena inverso: mais antigo para mais novo (esquerda para direita)
+  const sortedHistorico = historico.slice().sort((a, b) => {
+    if (a.ano === 0) return 1;
+    if (b.ano === 0) return -1;
+    return a.ano - b.ano; // Crescente
+  });
+  
   const labels = sortedHistorico.map(h => String(h.ano));
   const values = sortedHistorico.map(h => h.valor);
   
@@ -607,7 +611,7 @@ function renderChart(historico) {
           callbacks: {
             label: function(ctx) {
               const varPct = variacoes[ctx.dataIndex];
-              return (varPct > 0 ? '+' : '') + varPct.toFixed(1) + '% de depreciação';
+              return varPct.toFixed(1) + '% de depreciação';
             }
           }
         }
