@@ -86,10 +86,12 @@
     .highlight-title { font-size: 18px; font-weight: 700; margin: 0 0 4px; }
     .highlight-subtitle { font-size: 12px; color: var(--text-muted); margin: 0 0 12px; }
     .highlight-price { font-size: 28px; font-weight: 800; color: var(--accent); margin: 0 0 4px; }
-    .highlight-info { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px; }
-    .highlight-info-item { display: flex; flex-direction: column; }
-    .highlight-info-label { color: var(--text-muted); margin-bottom: 2px; }
-    .highlight-info-value { color: var(--text); font-weight: 600; }
+    
+    /* Info Grid 4x2 */
+    .info-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px; }
+    .info-card { background: rgba(0,188,212,0.08); border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-size: 11px; }
+    .info-card-label { color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+    .info-card-value { color: var(--text); font-weight: 700; }
     
     /* Cards Grid */
     .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -103,14 +105,15 @@
     /* Chart Panel */
     .chart-panel { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; flex: 1; min-width: 0; }
     .panel-title { font-size: 13px; font-weight: 700; margin: 0 0 8px; color: var(--text); }
-    .panel-subtitle { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; }
+    .panel-subtitle { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; line-height: 1.4; }
     .chart-container { position: relative; height: 280px; width: 100%; }
     
-    /* Similar Grid (15 linhas, 2 colunas) */
+    /* Similar Grid (10 linhas, 2 colunas) */
     .similar-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
     .similar-item { background: rgba(0,188,212,0.08); border: 1px solid var(--border); border-radius: 8px; padding: 10px; cursor: pointer; transition: all 0.15s; }
     .similar-item:hover { background: rgba(0,188,212,0.12); border-color: var(--accent); }
-    .similar-name { font-size: 11px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .similar-name { font-size: 11px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+    .similar-version { font-size: 10px; color: var(--text-muted); margin-bottom: 4px; }
     .similar-price { font-size: 11px; color: var(--accent); font-weight: 700; margin-bottom: 2px; }
     .similar-details { font-size: 10px; color: var(--text-muted); }
     .empty { text-align: center; color: var(--text-muted); font-size: 11px; padding: 12px; grid-column: 1/-1; }
@@ -118,6 +121,7 @@
     @media (max-width: 1400px) {
       .wrap { grid-template-columns: 1fr; }
       .sidebar, .right-panel { max-height: none; }
+      .info-grid { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
@@ -178,31 +182,41 @@
       <div class="highlight-title" id="highlightTitle">Selecione um veículo</div>
       <div class="highlight-subtitle" id="highlightSubtitle">--</div>
       <div class="highlight-price" id="highlightPrice">--</div>
-      <div class="highlight-info">
-        <div class="highlight-info-item">
-          <span class="highlight-info-label">Tipo</span>
-          <span class="highlight-info-value" id="infoHighlightTipo">--</span>
-        </div>
-        <div class="highlight-info-item">
-          <span class="highlight-info-label">Marca</span>
-          <span class="highlight-info-value" id="infoHighlightMarca">--</span>
-        </div>
-        <div class="highlight-info-item">
-          <span class="highlight-info-label">Modelo</span>
-          <span class="highlight-info-value" id="infoHighlightModelo">--</span>
-        </div>
-        <div class="highlight-info-item">
-          <span class="highlight-info-label">Combustível</span>
-          <span class="highlight-info-value" id="infoHighlightComb">--</span>
-        </div>
-        <div class="highlight-info-item">
-          <span class="highlight-info-label">Ano modelo</span>
-          <span class="highlight-info-value" id="infoHighlightAno">--</span>
-        </div>
-        <div class="highlight-info-item">
-          <span class="highlight-info-label">Período</span>
-          <span class="highlight-info-value" id="infoHighlightPeriodo">--</span>
-        </div>
+    </div>
+
+    <!-- Info Grid 4x2 -->
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="info-card-label">Tipo</div>
+        <div class="info-card-value" id="infoTipo">--</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-label">Marca</div>
+        <div class="info-card-value" id="infoMarca">--</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-label">Modelo</div>
+        <div class="info-card-value" id="infoModelo">--</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-label">Versão</div>
+        <div class="info-card-value" id="infoVersao">--</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-label">Ano Modelo</div>
+        <div class="info-card-value" id="infoAno">--</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-label">Combustível</div>
+        <div class="info-card-value" id="infoCombustivel">--</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-label">Período</div>
+        <div class="info-card-value" id="infoPeriodo">--</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-label">Registros</div>
+        <div class="info-card-value" id="infoRegistros">--</div>
       </div>
     </div>
 
@@ -223,7 +237,7 @@
     <!-- Gráfico -->
     <div class="chart-panel">
       <div class="panel-title">Histórico de Valores</div>
-      <div class="panel-subtitle">Evolução por ano disponível</div>
+      <div class="panel-subtitle" id="chartSubtitle">Evolução por ano disponível. Clique nas barras para filtrar modelos similares pelo valor selecionado.</div>
       <div class="chart-container">
         <canvas id="historyChart"></canvas>
       </div>
@@ -232,7 +246,7 @@
 
   <aside class="right-panel">
     <div class="panel-title">Modelos Similares</div>
-    <div class="panel-subtitle" id="similarSubtitle">Mesmo segmento e valor próximo</div>
+    <div class="panel-subtitle" id="similarSubtitle">Clique em qualquer modelo para carregá-lo na explanação central.</div>
     <div class="similar-grid" id="similarList"></div>
   </aside>
 </div>
@@ -493,16 +507,19 @@ function selectVehicle(data) {
   document.getElementById('highlightSubtitle').textContent = data.tipo + ' • ' + data.marca;
   document.getElementById('highlightPrice').textContent = fmt(data.latest.valor);
   
-  document.getElementById('infoHighlightTipo').textContent = data.tipo;
-  document.getElementById('infoHighlightMarca').textContent = data.marca;
-  document.getElementById('infoHighlightModelo').textContent = data.modelo;
-  document.getElementById('infoHighlightComb').textContent = data.latest.combustivel || '—';
-  document.getElementById('infoHighlightAno').textContent = data.latest.ano;
+  // Info grid
+  document.getElementById('infoTipo').textContent = data.tipo;
+  document.getElementById('infoMarca').textContent = data.marca;
+  document.getElementById('infoModelo').textContent = data.modelo;
+  document.getElementById('infoVersao').textContent = data.versao || '—';
+  document.getElementById('infoAno').textContent = data.latest.ano;
+  document.getElementById('infoCombustivel').textContent = data.latest.combustivel || '—';
 
   const anos = historico.map(h => h.ano);
   const anosOrdenados = anos.slice().sort(compareAno);
   const periodoStr = anosOrdenados.length > 0 ? `${anosOrdenados[anosOrdenados.length-1]}-${anosOrdenados[0]}` : '--';
-  document.getElementById('infoHighlightPeriodo').textContent = periodoStr;
+  document.getElementById('infoPeriodo').textContent = periodoStr;
+  document.getElementById('infoRegistros').textContent = historico.length;
 
   document.getElementById('cardHistorico').textContent = historico.length;
   document.getElementById('cardHistoricoSub').textContent = `Registros totais`;
@@ -528,11 +545,19 @@ function renderChart(historico) {
   const sortedHistorico = historico.slice().sort(compareAno);
   const labels = sortedHistorico.map(h => String(h.ano));
   const values = sortedHistorico.map(h => h.valor);
-  const variacoes = sortedHistorico.map((h, i) => {
-    if (i === 0) return 0;
-    const prev = sortedHistorico[i-1].valor;
-    return prev > 0 ? ((h.valor - prev) / prev * 100) : 0;
-  });
+  
+  // Calcula depreciação: positiva em relação ao ano SEGUINTE
+  const variacoes = [];
+  for (let i = 0; i < sortedHistorico.length; i++) {
+    if (i === sortedHistorico.length - 1) {
+      variacoes.push(0); // Último ano = 0
+    } else {
+      const current = sortedHistorico[i].valor;
+      const next = sortedHistorico[i + 1].valor;
+      const var_pct = next > 0 ? ((current - next) / next) * 100 : 0;
+      variacoes.push(var_pct);
+    }
+  }
 
   const ctx = document.getElementById('historyChart').getContext('2d');
   if (myChart) myChart.destroy();
@@ -554,7 +579,7 @@ function renderChart(historico) {
           ctxDraw.fillStyle = '#00bcd4';
           ctxDraw.textAlign = 'center';
           ctxDraw.textBaseline = 'bottom';
-          ctxDraw.fillText(fmt(value), x, y - 5);
+          ctxDraw.fillText(fmt(value), x, y - 7);
           ctxDraw.restore();
         });
       });
@@ -582,7 +607,7 @@ function renderChart(historico) {
           callbacks: {
             label: function(ctx) {
               const varPct = variacoes[ctx.dataIndex];
-              return (varPct > 0 ? '+' : '') + varPct.toFixed(1) + '% desde o ano anterior';
+              return (varPct > 0 ? '+' : '') + varPct.toFixed(1) + '% de depreciação';
             }
           }
         }
@@ -622,7 +647,7 @@ function renderChart(historico) {
 }
 
 function renderSimilar(vData, historico, barValue = null) {
-  const target = barValue !== null ? barValue : historico[historico.length - 1].valor;
+  const target = barValue !== null ? barValue : historico[0].valor;
   const margin = target * 0.15;
   
   const similares = allData
@@ -633,15 +658,15 @@ function renderSimilar(vData, historico, barValue = null) {
       d.latest.valor <= target + margin
     )
     .sort((a, b) => compareAno(a.latest.ano, b.latest.ano))
-    .slice(0, 30);
+    .slice(0, 20);
 
   const div = document.getElementById('similarList');
   const subtitle = document.getElementById('similarSubtitle');
   
   if (barValue !== null) {
-    subtitle.textContent = `Similares ao valor de ${fmt(barValue)}`;
+    subtitle.textContent = `Similares ao valor de ${fmt(barValue)}. Clique para carregar na explanação central.`;
   } else {
-    subtitle.textContent = `Mesmo segmento e valor próximo`;
+    subtitle.textContent = `Clique em qualquer modelo para carregá-lo na explanação central.`;
   }
 
   if (similares.length === 0) {
@@ -656,6 +681,7 @@ function renderSimilar(vData, historico, barValue = null) {
     const diff = ((s.latest.valor - target) / target * 100).toFixed(1);
     item.innerHTML = `
       <div class="similar-name">${s.marca} ${s.modelo}</div>
+      <div class="similar-version">${s.versao || '—'}</div>
       <div class="similar-price">${fmt(s.latest.valor)}</div>
       <div class="similar-details">${s.latest.ano} • ${s.latest.combustivel || '—'} • ${diff >= 0 ? '+' : ''}${diff}%</div>
     `;
